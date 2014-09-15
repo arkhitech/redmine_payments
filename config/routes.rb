@@ -1,1 +1,2 @@
-resources :payments 
+resources :payments
+resources :transactions
