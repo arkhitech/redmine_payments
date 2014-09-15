@@ -27,9 +27,12 @@ class PaymentsController < ApplicationController
     transaction.setProperty("Amount", @payment.amount);
     transaction.setProperty("Currency", "PKR");
     transaction.setProperty("CardNumber", @payment.cc_number);
-    transaction.setProperty("ExpiryDate", @payment.expiry_date);
-    transaction.setProperty("OrderName", @payment.order_name);
-    transaction.setProperty("OrderInfo", @payment.order_info);
+#    transaction.setProperty("ExpiryDate", @payment.expiry_date);
+#    transaction.setProperty("OrderName", @payment.order_name);
+#    transaction.setProperty("OrderInfo", @payment.order_info);
+    transaction.setProperty("OrderName", "Test Order");
+    transaction.setProperty("OrderInfo", "Testing Order Info");
+    transaction.setProperty("OrderID","123456");
     transaction.setProperty("OrderID", @payment.order_id);
 		transaction.setProperty("TransactionHint", "CPT:Y");
 		transaction.setProperty("VerifyCode", @payment.cvv2);
