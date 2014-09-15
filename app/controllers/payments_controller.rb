@@ -44,6 +44,8 @@ class PaymentsController < ApplicationController
     @payment.transaction_id = @trasaction.getProperty('TransactionID')
     @payment.approval_code = @transaction.getProperty("ApprovalCode")
     @payment.save
+    
+    redirect_to project_payments_path
   end
   
   private
