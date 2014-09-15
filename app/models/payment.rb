@@ -16,7 +16,6 @@ class Payment < ActiveRecord::Base
   
   
   def validate_credit_card
-    return;
     if cc_number.present? && !CreditCardValidator::Validator.valid?(cc_number)
       errors.add(:cc_number, 'is invalid')
     end    
