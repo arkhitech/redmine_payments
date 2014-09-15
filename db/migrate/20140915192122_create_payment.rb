@@ -9,6 +9,7 @@ class CreatePayment < ActiveRecord::Migration
       t.string :approval_code
       
       t.references :invoice
+      t.references :project
     end
   end
 
