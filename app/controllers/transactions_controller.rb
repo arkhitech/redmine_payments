@@ -1,4 +1,4 @@
-class TransactionController < ApplicationController
+class TransactionsController < ApplicationController
   unloadable
   
   def index
