@@ -44,7 +44,7 @@ class PaymentsController < ApplicationController
 
     @payment.response_code = @transaction.getResponseCode
     @payment.response_description = @transaction.getResponseDescription
-    @payment.transaction_id = @trasaction.getProperty('TransactionID')
+    @payment.transaction_id = @transaction.getProperty('TransactionID')
     @payment.approval_code = @transaction.getProperty("ApprovalCode")
     @payment.save
     
