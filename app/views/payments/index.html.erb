@@ -1,43 +1,47 @@
-<h2>Payments</h2>
-<table border="1" style="text-align:center">
-  <thead>
-    <tr>
-      <td>ID</td>
-      <td>Number</td>
-      <td>Invoice Date</td>
-      <td>Description</td>
-      <td>Due Date</td>
-      <td>Currency</td>
-      <td>Status</td>
-      <td>Project ID</td>
-      <td>Assigned To</td>
-      <td>Author</td>
-      <td>Subject</td>
-      <td>Amount</td>
-      <td>Action</td>
-    </tr>
-  </thead>
-  <tbody>
-    <% @invoices.each do |invoice| %>
-      <tr class="<%=cycle("odd", "even")%>">
-        <td><%= link_to invoice.id, invoice %></td>
-        <td><%= invoice.number %></td>
-        <td><%= invoice.invoice_date.localtime %></td>
-        <td><%= invoice.description %></td>
-        <td><%= invoice.due_date %></td>
-        <td><%= invoice.currency %></td>
-        <td><%= invoice.status %></td>
-        <td><%= link_to invoice.project.name, invoice.project %></td>
-        <td><%= invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to) %></td>
-        <td><%= link_to invoice.author.name, invoice.author %></td>
-        <td><%= invoice.subject %></td>
-        <td><%= invoice.amount.to_f %></td>
-        <% if User.current.allowed_to?(:make_payment, @project) || User.current.admin? %>
-          <td><%= link_to 'Pay', new_project_payment_path(@project.id, invoice_id: invoice.id) %></td>
-        <% else %>
-          <td>Not Allowed</td>
-        <% end %>
+<h2>Pending Invoices</h2>
+<%unless @invoices.any?%>
+<strong>Yay! No pending invoice found.</strong>
+<%else%>
+  <table border="1" style="text-align:center">
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>Number</td>
+        <td>Invoice Date</td>
+        <td>Description</td>
+        <td>Due Date</td>
+        <td>Currency</td>
+        <td>Status</td>
+        <td>Project ID</td>
+        <td>Assigned To</td>
+        <td>Author</td>
+        <td>Subject</td>
+        <td>Amount</td>
+        <td>Action</td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @invoices.each do |invoice| %>
+        <tr class="<%=cycle("odd", "even")%>">
+          <td><%= link_to invoice.id, invoice %></td>
+          <td><%= invoice.number %></td>
+          <td><%= invoice.invoice_date.localtime %></td>
+          <td><%= invoice.description %></td>
+          <td><%= invoice.due_date %></td>
+          <td><%= invoice.currency %></td>
+          <td><%= invoice.status %></td>
+          <td><%= link_to invoice.project.name, invoice.project %></td>
+          <td><%= invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to) %></td>
+          <td><%= link_to invoice.author.name, invoice.author %></td>
+          <td><%= invoice.subject %></td>
+          <td><%= invoice.amount.to_f %></td>
+          <% if User.current.allowed_to?(:make_payment, @project) || User.current.admin? %>
+            <td><%= link_to 'Pay', new_project_payment_path(@project.id, invoice_id: invoice.id) %></td>
+          <% else %>
+            <td>Not Allowed</td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<%end%>

@@ -1,4 +1,10 @@
 require 'redmine'
+Rails.configuration.to_prepare do
+  Moneyjs.configure do |config|
+    config.only_currencies = ['PKR','USD']
+  end    
+end
+
 Redmine::Plugin.register :redmine_payments do
   name 'Redmine Payments plugin'
   author 'Arkhitech'
@@ -14,5 +20,7 @@ Redmine::Plugin.register :redmine_payments do
     permission :make_payment, payments: [:index]
   end
   
-  settings :default => {'empty' => true}, :partial => 'settings/payment_settings'
+  settings default: {'payment_invoice_currency' => 'USD', '
+      payment_gateway_currency' => 'PKR', 'open_exchange_rate_app_id' => '24505f9c95c7405597f5eb5f43f3ed48'}, 
+    :partial => 'settings/payment_settings'
 end

@@ -2,7 +2,10 @@ class CreatePayment < ActiveRecord::Migration
   def self.up
     create_table :payments do |t|
       t.string :customer_name
-      t.string :amount
+      t.string :invoice_amount, precision: 10, scale: 2
+      t.string :invoice_currency, size: 3
+      t.string :payment_amount, precision: 10, scale: 2
+      t.string :payment_currency, size: 3
       t.string :transaction_id
       t.string :response_code
       t.string :response_description

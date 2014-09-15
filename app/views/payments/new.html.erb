@@ -2,17 +2,34 @@
 <%= error_messages_for @payment%>
 <%= labelled_form_for [@payment.project, @payment] do |f| %>
   <div class="box tabular">
+    <%= f.hidden_field :project_id %>
+    <%= f.hidden_field :invoice_id %>
     <p><%= f.text_field :customer_name %></p>
-    <p><%= f.text_field :amount %></p>
+    <p><%= f.text_field :invoice_amount %></p>
+    <p><%= f.text_field :payment_amount %></p>
     <p><%= f.text_field :cc_number %></p>
-    <p><%= f.text_field :expiry_date %>
-        <%= calendar_for 'payment_expiry_date' %>
+    <p><%= f.date_select :expiry_date, discard_day: true, start_year: Date.today.year, 
+      end_year: (Date.today.year+10), use_month_numbers: true %>
     </p>
     <p><%= f.text_field :cvv2 %></p>
   </div>
   <p class="buttons">
-    <%= f.hidden_field :project_id %>
-    <%= f.hidden_field :invoice_id %>
     <%= f.button l(:make_payment)%>
   </p>
 <%end%>
+<% OpenExchangeRates.configuration.app_id = Setting.plugin_redmine_payments['open_exchange_rate_app_id']%>
+<%= javascript_include_tag 'money', plugin: 'redmine_payments' %>
+<%= moneyjs_currency_rates %>
+  <script>
+    $(document).ready(function() {
+      $('#payment_invoice_amount').change(function() {
+        var result = fx.convert($(this).val(), {from: '<%=Setting.plugin_redmine_payments['invoice_currency']%>', to: '<%=Setting.plugin_redmine_payments['payment_currency']%>'});
+        $('#payment_payment_amount').val(result);
+      });
+      $('#payment_payment_amount').change(function() {
+        var result = fx.convert($(this).val(), {from: '<%=Setting.plugin_redmine_payments['payment_currency']%>', to: '<%=Setting.plugin_redmine_payments['invoice_currency']%>'});
+        $('#payment_invoice_amount').val(result);
+      });
+    })
+  </script>
+    

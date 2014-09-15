@@ -1,7 +1,15 @@
-<%#
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-%>
-
-<%= "_payment_settings.html" %>
+<legend><strong>Redmine Payment Settings</strong></legend>
+<table>  
+  <tr>
+    <td><legend>Invoice Currency</legend></td>
+    <td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
+  </tr>
+  <tr>
+    <td><legend>Payment Currency</legend></td>
+    <td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
+  </tr>
+  <tr>
+    <td><legend>OpenExchangeRate App ID</legend></td>
+    <td><%= text_field_tag('settings[open_exchange_rate_app_id]', settings['open_exchange_rate_app_id']) %></td>
+  </tr>
+</table>
