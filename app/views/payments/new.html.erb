@@ -1,0 +1,14 @@
+<h2>Make Payment</h2>
+<%= labelled_form_for [@payment.project, @payment] do |f| %>
+  <div class="box tabular">
+    <p><%= f.text_field :customer_name %></p>
+    <p><%= f.text_field :amount %></p>
+    <p><%= f.text_field :cc_number %></p>
+    <p><%= f.text_field :expiry_date %></p>
+    <p><%= f.text_field :cvv2 %></p>
+  </div>
+  <p class="buttons">
+    <%= f.hidden_field :invoice_id %>
+    <%= f.button :submit%>
+  </p>
+<%end%>

@@ -1,8 +1,3 @@
-resources :payments do
-  member do
-    get :make_payment
-    post :show_payment
-  end
+resources :projects do
+  resources :payments
 end
-
-resources :transactions

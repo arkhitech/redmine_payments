@@ -9,40 +9,46 @@ class PaymentsController < ApplicationController
     @invoices = Invoice.where("project_id IN (?)", @project.self_and_descendants.map(&:id))
   end
   
-  def make_payment
-    
+  def new    
+    invoice = Invoice.where(project_id: @project.id, id: params[:invoice_id]).first
+    @payment = Payment.new(amount: invoice.amount.to_f.to_s, customer_name: 'Demo Merchant', 
+      invoice: invoice)
   end
   
-  def show_payment
+  def create
     require 'rjb'
     Rjb::load
-
+    @payment = Payment.new(params[:payment])
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
 
     transaction = transaction_class.new("#{ENV['JAVA_HOME']}/jre/lib/SPI.properties");
     transaction.initialize("Authorization","1.0");
-    transaction.setProperty("Customer", params[:name]);
-    transaction.setProperty("Amount", params[:amount]);
+    transaction.setProperty("Customer", @payment.customer_name);
+    transaction.setProperty("Amount", @payment.amount);
     transaction.setProperty("Currency", "PKR");
-    transaction.setProperty("CardNumber", params[:number]);
-    transaction.setProperty("ExpiryDate", params[:date]);
-    transaction.setProperty("OrderName", "Test Order");
-    transaction.setProperty("OrderInfo", "Testing Order Info");
-    transaction.setProperty("OrderID","123456");
+    transaction.setProperty("CardNumber", @payment.cc_number);
+    transaction.setProperty("ExpiryDate", @payment.expiry_date);
+    transaction.setProperty("OrderName", @payment.order_name);
+    transaction.setProperty("OrderInfo", @payment.order_info);
+    transaction.setProperty("OrderID", @payment.order_id);
 		transaction.setProperty("TransactionHint", "CPT:Y");
-		transaction.setProperty("VerifyCode", params[:code]);
+		transaction.setProperty("VerifyCode", @payment.cvv2);
 		    
     @transaction = transaction
     @result = transaction.execute();
 
-    @approval_code = @transaction.getProperty("ApprovalCode")
     @balance = @transaction.getProperty("Balance")
-    @transaction_id = @transaction.getProperty("TransactionID")
+
+    @payment.response_code = @transaction.getResponseCode
+    @payment.response_description = @transaction.getResponseDescription
+    @payment.transaction_id = @trasaction.getProperty('TransactionID')
+    @payment.approval_code = @transaction.getProperty("ApprovalCode")
+    @payment.save
   end
   
   private
   
   def find_project
-    @project = Project.find(params[:id])
+    @project = Project.find(params[:project_id])
   end
 end
