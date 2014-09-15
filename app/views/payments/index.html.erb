@@ -28,7 +28,7 @@
         <td><%= invoice.currency %></td>
         <td><%= invoice.status %></td>
         <td><%= link_to invoice.project.name, invoice.project %></td>
-        <td><%= link_to invoice.assigned_to.name, invoice.assigned_to %></td>
+        <td><%= invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to) %></td>
         <td><%= link_to invoice.author.name, invoice.author %></td>
         <td><%= invoice.subject %></td>
         <td><%= invoice.amount.to_f %></td>

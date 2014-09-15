@@ -12,40 +12,11 @@ class PaymentsController < ApplicationController
   def new    
     invoice = Invoice.where(project_id: @project.id, id: params[:invoice_id]).first
     @payment = Payment.new(amount: invoice.amount.to_f.to_s, customer_name: 'Demo Merchant', 
-      invoice: invoice)
+      invoice: invoice, project: @project)
   end
   
   def create
-    require 'rjb'
-    Rjb::load
     @payment = Payment.new(params[:payment])
-    transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
-
-    transaction = transaction_class.new("#{ENV['JAVA_HOME']}/jre/lib/SPI.properties");
-    transaction.initialize("Authorization","1.0");
-    transaction.setProperty("Customer", @payment.customer_name);
-    transaction.setProperty("Amount", @payment.amount);
-    transaction.setProperty("Currency", "PKR");
-    transaction.setProperty("CardNumber", @payment.cc_number);
-#    transaction.setProperty("ExpiryDate", @payment.expiry_date);
-#    transaction.setProperty("OrderName", @payment.order_name);
-#    transaction.setProperty("OrderInfo", @payment.order_info);
-    transaction.setProperty("OrderName", "Test Order");
-    transaction.setProperty("OrderInfo", "Testing Order Info");
-    transaction.setProperty("OrderID","123456");
-    transaction.setProperty("OrderID", @payment.order_id);
-		transaction.setProperty("TransactionHint", "CPT:Y");
-		transaction.setProperty("VerifyCode", @payment.cvv2);
-		    
-    @transaction = transaction
-    @result = transaction.execute();
-
-    @balance = @transaction.getProperty("Balance")
-
-    @payment.response_code = @transaction.getResponseCode
-    @payment.response_description = @transaction.getResponseDescription
-    @payment.transaction_id = @transaction.getProperty('TransactionID')
-    @payment.approval_code = @transaction.getProperty("ApprovalCode")
     if @payment.save
       redirect_to project_payments_path
     else
