@@ -33,7 +33,7 @@
         <td><%= invoice.subject %></td>
         <td><%= invoice.amount.to_f %></td>
         <% if User.current.allowed_to?(:make_payment, @project) || User.current.admin? %>
-          <td><%= link_to 'Pay', transactions_path %></td>
+          <td><%= link_to 'Pay', make_payment_payment_path(@project) %></td>
         <% else %>
           <td>Not Allowed</td>
         <% end %>

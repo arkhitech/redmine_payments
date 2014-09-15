@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_payments do
   author_url 'https://github.com/arkhitech'
   
   menu :project_menu, :redmine_payments, { controller: 'payments', action: 'index' },
-    caption: :caption_redmine_payments, :param => :project_id
+    caption: :caption_redmine_payments
   
   project_module :payments do
     permission :make_payment, payments: [:index]
