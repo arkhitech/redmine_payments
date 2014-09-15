@@ -2,6 +2,7 @@
 en:
   caption_redmine_payments: "Payments"
   field_customer_name: 'Customer Name'
+  field_amount: 'Amount'
   field_cc_number: 'CreditCard Number'
   field_expiry_date: 'Expiry Date'
   field_cvv2: 'CVV2'

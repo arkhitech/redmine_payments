@@ -46,9 +46,11 @@ class PaymentsController < ApplicationController
     @payment.response_description = @transaction.getResponseDescription
     @payment.transaction_id = @transaction.getProperty('TransactionID')
     @payment.approval_code = @transaction.getProperty("ApprovalCode")
-    @payment.save
-    
-    redirect_to project_payments_path
+    if @payment.save
+      redirect_to project_payments_path
+    else
+      render 'new'
+    end
   end
   
   private
