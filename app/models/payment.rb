@@ -8,11 +8,11 @@ class Payment < ActiveRecord::Base
   end
   
   def order_name
-    invoice.invoice_number
+    invoice.number
   end
   
   def order_info
-    invoice.invoice_subject
+    invoice.subject
   end
   def order_id
     invoice_id
