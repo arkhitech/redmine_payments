@@ -5,7 +5,7 @@
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
     <p><%= f.text_field :customer_name %></p>
-    <p><%= f.text_field :invoice_amount %></p>
+    <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= @payment.invoice_amount_to_s%></p> 
     <p><%= f.text_field :payment_amount %></p>
     <p><%= f.text_field :cc_number %></p>
     <p><%= f.date_select :expiry_date, discard_day: true, start_year: Date.today.year, 

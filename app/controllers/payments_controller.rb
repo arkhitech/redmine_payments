@@ -12,7 +12,7 @@ class PaymentsController < ApplicationController
   
   def new    
     invoice = Invoice.includes(:contact).where(project_id: @project.id, id: params[:invoice_id]).first
-    @payment = Payment.new(invoice_amount: invoice.amount, 
+    @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
       invoice_currency: invoice.currency,
       payment_currency: Setting.plugin_redmine_payments['payment_currency'],
       invoice: invoice, project: @project)
