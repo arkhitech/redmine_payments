@@ -37,7 +37,7 @@ class Payment < ActiveRecord::Base
   
   def payment_amount
     read_attribute(:payment_amount) || write_attribute(:payment_amount, 
-      fx.convert(invoice_amount, from: invoice_currency, to: payment_currency))
+      '%.2f'%fx.convert(invoice_amount, from: invoice_currency, to: payment_currency))
   end
   
   def order_info
