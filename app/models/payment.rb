@@ -30,6 +30,9 @@ class Payment < ActiveRecord::Base
   def invoice_amount_to_s
     "#{invoice_currency} #{'%.02f'%invoice_amount}"    
   end
+  def remaining_balance_to_s
+    "#{invoice_currency} #{'%.02f'%(invoice && invoice.remaining_balance)||invoice_amount}"    
+  end
   
   def payment_amount_to_s
     "#{payment_currency} #{'%.02f'%paymount_amount}"    
@@ -84,6 +87,7 @@ class Payment < ActiveRecord::Base
     self.approval_code = transaction.getProperty("ApprovalCode")
     if self.response_code.to_i > 0
       errors.add(:base, "#{response_code}: #{response_description}")      
+      errors.add(:base, "For more information, please contact your card issuing bank.")
     else
       InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"

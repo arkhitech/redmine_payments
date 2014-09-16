@@ -26,7 +26,8 @@ class PaymentsController < ApplicationController
       redirect_to project_payments_path, notice: "Payment of #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
       payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
-      invoice_id} Project: #{@payment.project.name}"
+      invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
+      transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
     else
       render 'new'
     end
