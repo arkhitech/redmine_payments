@@ -7,3 +7,5 @@ resources :projects do
     end
   end
 end
+
+match "/finalize", to: "payments#finalize"
