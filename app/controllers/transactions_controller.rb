@@ -8,7 +8,7 @@ class TransactionsController < ApplicationController
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
 
     transaction = transaction_class.new("#{ENV['JAVA_HOME']}/jre/lib/SPI.properties");
-    transaction.initialize("Authorization","1.0");
+    transaction.initialize("Registration","1.0");
     transaction.setProperty("Customer", "Demo Merchant");
     transaction.setProperty("Amount", "12.23");
     transaction.setProperty("Currency", "PKR");

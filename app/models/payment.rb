@@ -1,5 +1,10 @@
 class Payment < ActiveRecord::Base
   attr_accessor :cc_number, :cvv2
+  attr_accessor :state
+  
+  STATE_REGISTRATION = 'Registration'  
+  STATE_AUTHORIZATION = 'Authorization'
+  STATE_FINALIZATION = 'Finalization'
   
   composed_of :expiry_date, class_name: "DateTime",
     mapping: %w(Time to_s),
@@ -9,13 +14,13 @@ class Payment < ActiveRecord::Base
   belongs_to :invoice
   belongs_to :project
   
-  before_create :execute
+  #before_create :execute
   
-  validate :validate_credit_card
-  validates :cc_number, :expiry_date, :cvv2, presence: true
-  
-  
+  validate :validate_credit_card, if: 'state == STATE_AUTHORIZATION'
+  validates :cc_number, :expiry_date, :cvv2, presence: true, if: 'state == STATE_AUTHORIZATION'
+    
   def validate_credit_card
+    return
     if cc_number.present? && !CreditCardValidator::Validator.valid?(cc_number)
       errors.add(:cc_number, 'is invalid')
     end    
@@ -62,29 +67,88 @@ class Payment < ActiveRecord::Base
     invoice.subject
   end
   
-  def execute
+  def transaction_for_registration
     require 'rjb'
     Rjb::load
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
 
     transaction = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
-    transaction.initialize("Authorization","1.0");
-    transaction.setProperty("Customer", self.customer_name)
-    transaction.setProperty("Amount", self.payment_amount)
-    transaction.setProperty("Currency", payment_currency)
-    transaction.setProperty("CardNumber", self.cc_number)
-    transaction.setProperty("ExpiryDate", "#{expiry_date.year}-#{'%02i'%expiry_date.month}");
-    transaction.setProperty("OrderName", order_name)
-    transaction.setProperty("OrderInfo", order_info)
-    transaction.setProperty("OrderID", "#{order_id}")
+    transaction.initialize(STATE_REGISTRATION,"1.0");
+    transaction.setProperty("Customer", self.customer_name.to_s)
+    transaction.setProperty("Amount", self.payment_amount.to_s)
+    transaction.setProperty("Currency", payment_currency.to_s)
+
+    transaction.setProperty("OrderName", order_name.to_s)
+    transaction.setProperty("OrderInfo", order_info.to_s)
+    transaction.setProperty("OrderID", "#{order_id.to_s}")
 		transaction.setProperty("TransactionHint", "CPT:Y")
-		transaction.setProperty("VerifyCode", cvv2);
+#    transaction.setProperty("ReturnPath", finalize_project_payments_path(payment: @payment.id, customer_name: self.customer_name.to_s, transaction_id: transaction.getProperty('TransactionID')))
+		    
+    result = transaction.execute()
+    self.response_code = transaction.getResponseCode
+    self.response_description = transaction.getResponseDescription
+    self.transaction_id = transaction.getProperty('TransactionID')
+
+  puts self.customer_name.to_s
+  puts self.payment_amount.to_s
+  puts payment_currency.to_s
+  puts order_name.to_s
+  puts order_info.to_s
+  puts order_id.to_s
+  puts transaction.getProperty('PaymentPage')    
+  
+#        redirect_to transaction.getProperty('PaymentPage')      
+
+  end
+  
+  def transaction_for_finalization(customer_id, transaction_id)
+    require 'rjb'
+    Rjb::load
+    transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
+
+    finalization = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
+    finalization.initialize("Finalization","1.0");
+    finalization.setProperty("Customer", customer_id.to_s)
+    finalization.setProperty("TransactionID", transaction_id.to_s)
+		    
+    result = finalization.execute()
+    self.response_code = finalization.getResponseCode
+    self.response_description = finalization.getResponseDescription
+    
+    self.approval_code = finalization.getProperty("ApprovalCode")    
+    self.order_id  = finalization.getProperty("OrderID")    
+    self.amount = finalization.getProperty("Amount")    
+    self.balance = finalization.getProperty("Balance")    
+    self.card_number = finalization.getProperty("CardNumber")    
+    self.card_token = finalization.getProperty("CardToken")    
+    self.account = finalization.getProperty("Account")    
+
+  end
+  
+  def authorize_transaction
+    require 'rjb'
+    Rjb::load
+    transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
+
+    transaction = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
+    transaction.initialize(STATE_AUTHORIZATION,"1.0");
+    transaction.setProperty("Customer", self.customer_name.to_s)
+    transaction.setProperty("Amount", self.payment_amount.to_s)
+    transaction.setProperty("Currency", payment_currency.to_s)
+    transaction.setProperty("CardNumber", self.cc_number.to_s)
+    transaction.setProperty("ExpiryDate", "#{expiry_date.year.to_s}-#{'%02i'%expiry_date.month.to_s}");
+    transaction.setProperty("OrderName", order_name.to_s)
+    transaction.setProperty("OrderInfo", order_info.to_s)
+    transaction.setProperty("OrderID", "#{order_id.to_s}")
+		transaction.setProperty("TransactionHint", "CPT:Y")
+		transaction.setProperty("VerifyCode", cvv2.to_s);
 		    
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
     self.response_description = transaction.getResponseDescription
     self.transaction_id = transaction.getProperty('TransactionID')
     self.approval_code = transaction.getProperty("ApprovalCode")
+
     if self.response_code.to_i > 0
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
@@ -96,5 +160,5 @@ class Payment < ActiveRecord::Base
     
     !errors.any?    
   end
-  private :execute
+  
 end

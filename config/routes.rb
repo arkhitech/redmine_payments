@@ -1,3 +1,9 @@
 resources :projects do
-  resources :payments
+  resources :payments do
+    collection do
+      get :partial_payment
+      get :register
+      get :finalize
+    end
+  end
 end
