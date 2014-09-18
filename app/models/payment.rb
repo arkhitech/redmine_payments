@@ -83,7 +83,7 @@ class Payment < ActiveRecord::Base
     transaction.setProperty("OrderID", "#{order_id.to_s}")
 		transaction.setProperty("TransactionHint", "CPT:Y")
 #    transaction.setProperty("ReturnPath", finalize_project_payments_path(payment: @payment.id, customer_name: self.customer_name.to_s, transaction_id: transaction.getProperty('TransactionID')))
-		transaction.setProperty("ReturnPath", "/finalize")    
+		transaction.setProperty("ReturnPath", "https://secure.arkhitech.com/projects/arkhitech-rnd/payments")
     
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
@@ -98,7 +98,7 @@ class Payment < ActiveRecord::Base
   puts order_id.to_s
   puts transaction.getProperty('PaymentPage')    
   
-  redirect_to transaction.getProperty('PaymentPage')      
+  transaction
 
   end
   
