@@ -4,6 +4,7 @@ class Payment < ActiveRecord::Base
   attr_accessor :return_path
   attr_accessor :payment_page
   
+  STATE_REDIRECT = 'Redirect'  
   STATE_REGISTRATION = 'Registration'  
   STATE_AUTHORIZATION = 'Authorization'
   STATE_FINALIZATION = 'Finalization'
@@ -27,9 +28,9 @@ class Payment < ActiveRecord::Base
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
     
   before_save do
-    if self.state == STATE_REGISTRATION
-      transaction_for_registration
-    elsif self.state == STATE_FINALIZATION
+#    if self.state == STATE_REGISTRATION
+#      transaction_for_registration
+    if self.state == STATE_FINALIZATION
       transaction_for_finalization
     elsif self.state == STATE_AUTHORIZATION
       authorize_transaction
