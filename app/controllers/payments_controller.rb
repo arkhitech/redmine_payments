@@ -53,8 +53,18 @@ class PaymentsController < ApplicationController
 #    if @payment.validate
       transaction = @payment.transaction_for_registration#(@project, 
 #          invoice_id: @payment.invoice_id, customer_name: @payment.customer_name)
-      redirect_to transaction.getProperty('PaymentPage')
+#    redirect_to transaction.getProperty('PaymentPage')
  #   end
+
+    require "uri"
+require "net/http"
+
+params = 
+      {
+"TransactionID" => @payment.transaction_id 
+    }
+x = Net::HTTP.post_form(URI.parse(transaction.getProperty('PaymentPage')), params)
+
   end
   
   def finalize
