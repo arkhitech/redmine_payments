@@ -53,7 +53,7 @@ class PaymentsController < ApplicationController
 #    if @payment.validate
     transaction = @payment.transaction_for_registration#(@project, 
 #          invoice_id: @payment.invoice_id, customer_name: @payment.customer_name)
-#    @payment_page = transaction.getProperty('PaymentPage')
+    @payment_page = transaction.getProperty('PaymentPage')
  #   end
   end
   
