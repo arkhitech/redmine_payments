@@ -51,7 +51,7 @@ class PaymentsController < ApplicationController
   def register
     @payment = Payment.new(params[:payment])
     @payment.state = Payment::STATE_REGISTRATION
-    @payment.return_path = finalize_project_payments_url(@project, @payment)
+    @payment.return_path = finalize_project_payment_url(@project, @payment)
     if @payment.save
       render 'register'
       return

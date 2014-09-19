@@ -3,7 +3,9 @@ resources :projects do
     collection do
       get :generate
       post :register
-      match :finalize
+    end
+    member do
+      match :finalize      
     end
   end
 end
