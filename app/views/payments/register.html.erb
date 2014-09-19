@@ -1,4 +1,6 @@
-<%=form_tag action:@payment.payment_page, id: 'redirect_form' do%>
+
+<h2>Please wait while we redirect you for payment processing...</h2>
+<%=form_tag @payment.payment_page, id: 'redirect_form' do%>
   <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
 <%end%>
 <script>

@@ -56,11 +56,11 @@ class PaymentsController < ApplicationController
       render 'register'
       return
     end
-    render 'register'
+    render 'generate'
   end
   
   def finalize
-    @payment = Payment.find_by_project_id_and_payment_id(@project.id, params[:id])    
+    @payment = Payment.find_by_project_id_and_id(@project.id, params[:id])    
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:transaction_id]
     if @payment.save
