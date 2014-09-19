@@ -24,7 +24,7 @@ class Payment < ActiveRecord::Base
   validates :payment_amount, :payment_currency, :project_id, presence: true
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
-  validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
+  #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
     
   before_save do
     if self.state == STATE_REGISTRATION
