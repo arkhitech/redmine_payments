@@ -1,6 +1,8 @@
 class Payment < ActiveRecord::Base
   attr_accessor :cc_number, :cvv2
   attr_accessor :state
+  attr_accessor :return_path
+  attr_accessor :payment_page
   
   STATE_REGISTRATION = 'Registration'  
   STATE_AUTHORIZATION = 'Authorization'
@@ -22,7 +24,21 @@ class Payment < ActiveRecord::Base
   validates :payment_amount, :payment_currency, :project_id, presence: true
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
+  validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
     
+  before_save do
+    if self.state == STATE_REGISTRATION
+      transaction_for_registration
+    elsif self.state == STATE_FINALIZATION
+      transaction_for_finalization
+    elsif self.state == STATE_AUTHORIZATION
+      authorize_transaction
+    else
+      errors.add(:base, 'Unknown state of payment')
+      false
+    end
+  end
+  
   def validate_credit_card
     unless state == STATE_AUTHORIZATION
       return
@@ -73,7 +89,7 @@ class Payment < ActiveRecord::Base
     invoice.subject
   end
   
-  def transaction_for_registration(return_path)
+  def transaction_for_registration
     require 'rjb'
     Rjb::load
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
@@ -89,13 +105,21 @@ class Payment < ActiveRecord::Base
     transaction.setProperty("OrderID", "#{order_id.to_s}")
 		transaction.setProperty("TransactionHint", "CPT:Y")
     transaction.setProperty("ReturnPath", return_path)
-		#transaction.setProperty("ReturnPath", )
     
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
     self.response_description = transaction.getResponseDescription
     self.transaction_id = transaction.getProperty('TransactionID')
-    transaction
+      
+    if self.response_code.to_i > 0
+      errors.add(:base, "#{response_code}: #{response_description}")      
+      errors.add(:base, "For more information, please contact your card issuing bank.")
+    else
+      self.payment_page = transaction.getProperty('PaymentPage')
+    end
+    
+    !errors.any?    
+    
   end
   
   def transaction_for_finalization

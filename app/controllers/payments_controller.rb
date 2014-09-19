@@ -20,7 +20,7 @@ class PaymentsController < ApplicationController
     @payment.customer_name = invoice.contact.name unless invoice.contact.nil?
   end
 
-  def partial_payment
+  def generate
     invoice = Invoice.includes(:contact).where(project_id: @project.id, id: params[:invoice_id]).first
     puts invoice
     @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
@@ -50,14 +50,12 @@ class PaymentsController < ApplicationController
   def register
     @payment = Payment.new(params[:payment])
     @payment.state = Payment::STATE_REGISTRATION
+    @payment.return_path = finalize_project_payments_url(@project, @payment)
     if @payment.save
-      transaction = @payment.
-        transaction_for_registration(project_payment_finalize_url(
-          @project, @payment))
-      @payment_page = transaction.getProperty('PaymentPage')      
-    else
-      render 'partial_payment'
+      render 'register'
+      return
     end
+    render 'generate'
   end
   
   def finalize
@@ -65,16 +63,14 @@ class PaymentsController < ApplicationController
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:transaction_id]
     if @payment.save
-      if @payment.transaction_for_finalization
-        redirect_to project_payments_path, notice: "Payment of #{@payment.
-        invoice_currency} #{@payment.invoice_amount} (#{@payment.
-        payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
-        invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
-        transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
-      end
+      redirect_to project_payments_path, notice: "Payment of #{@payment.
+      invoice_currency} #{@payment.invoice_amount} (#{@payment.
+      payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
+      invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
+      transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
     end
     #else for all
-    render 'partial_payment'    
+    render 'generate'    
   end
   
   private

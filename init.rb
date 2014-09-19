@@ -17,7 +17,7 @@ Redmine::Plugin.register :redmine_payments do
     caption: :caption_redmine_payments, param: :project_id
   
   project_module :payments do
-    permission :make_payment, payments: [:index]
+    permission :make_payment, payments: [:index, :generate, :finalize, :register]
   end
   
   settings default: {'payment_invoice_currency' => 'USD', '

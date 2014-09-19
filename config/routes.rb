@@ -1,7 +1,7 @@
 resources :projects do
   resources :payments do
     collection do
-      get :partial_payment
+      get :generate
       post :register
       match :finalize
     end
