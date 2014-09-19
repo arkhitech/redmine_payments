@@ -34,37 +34,47 @@ class PaymentsController < ApplicationController
   
   def create
     @payment = Payment.new(params[:payment])
-    @payment.state = Payment::STATE_REGISTRATION
+    @payment.state = Payment::STATE_AUTHORIZATION
     
     if @payment.save
-      redirect_to register_project_payments_path(payment: @payment.id), notice: "Payment of #{@payment.
+      redirect_to project_payments_path, notice: "Payment of #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
       payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
       invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
       transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
     else
-      render 'partial_payment'
+      render 'new'
     end
   end
   
   def register
-    @payment = Payment.find(params[:payment])
+    @payment = Payment.new(params[:payment])
     @payment.state = Payment::STATE_REGISTRATION
-#    if @payment.validate
-    transaction = @payment.transaction_for_registration#(@project, 
-#          invoice_id: @payment.invoice_id, customer_name: @payment.customer_name)
-    @payment_page = transaction.getProperty('PaymentPage')
- #   end
+    if @payment.save
+      transaction = @payment.
+        transaction_for_registration(project_payment_finalize_url(
+          @project, @payment))
+      @payment_page = transaction.getProperty('PaymentPage')      
+    else
+      render 'partial_payment'
+    end
   end
   
   def finalize
-    @payment = Payment.find(params[:payment])    
+    @payment = Payment.find_by_project_id_and_payment_id(@project.id, params[:id])    
     @payment.state = Payment::STATE_FINALIZATION
-#    @payment = Payment.new(project_id: @project.id, 
- #     invoice_id: params[:invoice_id], customer_name: params[:customer_name])
-    if @payment.transaction_for_finalization(customer_name: params[:customer_name], transaction_id: params[:transaction_id])
-      
+    @payment.transaction_id = params[:transaction_id]
+    if @payment.save
+      if @payment.transaction_for_finalization
+        redirect_to project_payments_path, notice: "Payment of #{@payment.
+        invoice_currency} #{@payment.invoice_amount} (#{@payment.
+        payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
+        invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
+        transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
+      end
     end
+    #else for all
+    render 'partial_payment'    
   end
   
   private

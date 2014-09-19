@@ -16,11 +16,17 @@ class Payment < ActiveRecord::Base
   
   #before_create :execute
   
-  validate :validate_credit_card, if: 'state == STATE_AUTHORIZATION'
+  validate :validate_credit_card
   validates :cc_number, :expiry_date, :cvv2, presence: true, if: 'state == STATE_AUTHORIZATION'
     
+  validates :payment_amount, :payment_currency, :project_id, presence: true
+
+  validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
+    
   def validate_credit_card
-    return
+    unless state == STATE_AUTHORIZATION
+      return
+    end
     if cc_number.present? && !CreditCardValidator::Validator.valid?(cc_number)
       errors.add(:cc_number, 'is invalid')
     end    
@@ -67,7 +73,7 @@ class Payment < ActiveRecord::Base
     invoice.subject
   end
   
-  def transaction_for_registration
+  def transaction_for_registration(return_path)
     require 'rjb'
     Rjb::load
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
@@ -82,8 +88,8 @@ class Payment < ActiveRecord::Base
     transaction.setProperty("OrderInfo", order_info.to_s)
     transaction.setProperty("OrderID", "#{order_id.to_s}")
 		transaction.setProperty("TransactionHint", "CPT:Y")
-#    transaction.setProperty("ReturnPath", finalize_project_payments_path(payment: @payment.id, customer_name: self.customer_name.to_s, transaction_id: transaction.getProperty('TransactionID')))
-		transaction.setProperty("ReturnPath", "https://secure.arkhitech.com/projects/arkhitech-rnd/payments")
+    transaction.setProperty("ReturnPath", return_path)
+		#transaction.setProperty("ReturnPath", )
     
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
@@ -92,20 +98,20 @@ class Payment < ActiveRecord::Base
     transaction
   end
   
-  def transaction_for_finalization(customer_id, transaction_id)
+  def transaction_for_finalization
     require 'rjb'
     Rjb::load
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
 
     finalization = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
     finalization.initialize("Finalization","1.0");
-    finalization.setProperty("Customer", customer_id.to_s)
-    finalization.setProperty("TransactionID", transaction_id.to_s)
+    finalization.setProperty("Customer", self.customer_name.to_s)
+    finalization.setProperty("TransactionID", self.transaction_id.to_s)
 		    
     result = finalization.execute()
     self.response_code = finalization.getResponseCode
     self.response_description = finalization.getResponseDescription
-    
+
     self.approval_code = finalization.getProperty("ApprovalCode")    
     self.order_id  = finalization.getProperty("OrderID")    
     self.amount = finalization.getProperty("Amount")    
@@ -113,6 +119,18 @@ class Payment < ActiveRecord::Base
     self.card_number = finalization.getProperty("CardNumber")    
     self.card_token = finalization.getProperty("CardToken")    
     self.account = finalization.getProperty("Account")    
+    
+    if self.response_code.to_i > 0
+      errors.add(:base, "#{response_code}: #{response_description}")      
+      errors.add(:base, "For more information, please contact your card issuing bank.")
+    else
+      InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
+        invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"
+      )
+    end
+    
+    !errors.any?    
+    
 
   end
   

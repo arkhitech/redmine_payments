@@ -2,8 +2,8 @@ resources :projects do
   resources :payments do
     collection do
       get :partial_payment
-      get :register
-      get :finalize
+      post :register
+      match :finalize
     end
   end
 end

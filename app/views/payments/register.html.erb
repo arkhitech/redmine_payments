@@ -1,10 +1,6 @@
-<html>
-  <body>
-    <form method=post action=<%=@payment_page%> id='my_form'>>
-      <input type="hidden" id="userName" name="TransactionID" value=<%=@payment.transaction_id%> >
-    </form>
-    <script>
-      document.getElementById("my_form").submit();
-    </script>
-  </body>
-</html>
+<form method=post action=<%=@payment_page%> id='my_form'>>
+  <input type="hidden" id="userName" name="TransactionID" value=<%=@payment.transaction_id%> >
+</form>
+<script>
+  $("my_form").submit();
+</script>
