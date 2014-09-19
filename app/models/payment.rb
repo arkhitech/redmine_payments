@@ -28,9 +28,9 @@ class Payment < ActiveRecord::Base
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
     
   before_save do
-#    if self.state == STATE_REGISTRATION
+    if self.state == STATE_REGISTRATION
 #      transaction_for_registration
-    if self.state == STATE_FINALIZATION
+    elsif self.state == STATE_FINALIZATION
       transaction_for_finalization
     elsif self.state == STATE_AUTHORIZATION
       authorize_transaction
