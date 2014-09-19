@@ -1,5 +1,6 @@
 class PaymentsController < ApplicationController
   unloadable
+  skip_before_filter :verify_authenticity_token, only: :finalize
   
   before_filter :find_project
 
@@ -55,7 +56,7 @@ class PaymentsController < ApplicationController
       render 'register'
       return
     end
-    render 'generate'
+    render 'register'
   end
   
   def finalize

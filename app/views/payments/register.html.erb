@@ -1,6 +1,6 @@
-<form method=post action=<%=@payment.payment_page%> id='my_form'>>
-  <input type="hidden" id="userName" name="TransactionID" value=<%=@payment.transaction_id%> >
-</form>
+<%=form_tag action:@payment.payment_page, id: 'redirect_form' do%>
+  <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
+<%end%>
 <script>
-  $("my_form").submit();
+  $('#redirect_form').submit();
 </script>
