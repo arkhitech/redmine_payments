@@ -51,20 +51,10 @@ class PaymentsController < ApplicationController
     @payment = Payment.find(params[:payment])
     @payment.state = Payment::STATE_REGISTRATION
 #    if @payment.validate
-      transaction = @payment.transaction_for_registration#(@project, 
+    transaction = @payment.transaction_for_registration#(@project, 
 #          invoice_id: @payment.invoice_id, customer_name: @payment.customer_name)
-#    redirect_to transaction.getProperty('PaymentPage')
+    @payment_page = transaction.getProperty('PaymentPage')
  #   end
-
-    require "uri"
-require "net/http"
-
-params = 
-      {
-"TransactionID" => @payment.transaction_id 
-    }
-x = Net::HTTP.post_form(URI.parse(transaction.getProperty('PaymentPage')), params)
-
   end
   
   def finalize

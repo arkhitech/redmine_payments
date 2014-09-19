@@ -89,17 +89,6 @@ class Payment < ActiveRecord::Base
     self.response_code = transaction.getResponseCode
     self.response_description = transaction.getResponseDescription
     self.transaction_id = transaction.getProperty('TransactionID')
-
-  puts self.customer_name.to_s
-  puts self.payment_amount.to_s
-  puts payment_currency.to_s
-  puts order_name.to_s
-  puts order_info.to_s
-  puts order_id.to_s
-  puts transaction.getProperty('PaymentPage')    
-  
-  transaction
-
   end
   
   def transaction_for_finalization(customer_id, transaction_id)

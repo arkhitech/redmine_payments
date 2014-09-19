@@ -1,10 +1,10 @@
 <html>
   <body>
-    <form method=post action="https://demo-ipg.comtrust.ae/Payment/PaymentPortal.aspx?layout=C0NBESD" id='my_form'>
+    <form method=post id='my_form' action=<%=@payment_page%>>
       <input type="hidden" id="userName" name="TransactionID" value=<%=@payment.transaction_id%> >
     </form>
     <script>
-      document.getElementById("my_form").submit()
+      document.getElementById("my_form").submit();
     </script>
   </body>
 </html>
