@@ -65,8 +65,8 @@ class PaymentsController < ApplicationController
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
-      render layout: false
-      render text: "Thank you for the payment! \n Payment amount: #{@payment.
+#      render layout: false
+      render text: "Thank you for the payment! \n \n Payment amount: #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
       payment_currency} #{@payment.payment_amount}) \n Invoice: #{@payment.
       invoice_id} \n Project: #{@payment.project.name} \n Transaction ID: #{@payment.
@@ -82,7 +82,7 @@ class PaymentsController < ApplicationController
 
     end
     #else for all
-    render 'generate'    
+    render 'generate'
   end
   
   private
