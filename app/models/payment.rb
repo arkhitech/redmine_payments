@@ -104,18 +104,18 @@ class Payment < ActiveRecord::Base
     transaction.setProperty("OrderName", order_name.to_s)
     transaction.setProperty("OrderInfo", order_info.to_s)
     transaction.setProperty("OrderID", "#{order_id.to_s}")
-		transaction.setProperty("TransactionHint", "CPT:Y")
+		transaction.setProperty("TransactionHint", "CPT:Y;VCC:Y")
     transaction.setProperty("ReturnPath", return_path)
     
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
     self.response_description = transaction.getResponseDescription
-    self.transaction_id = transaction.getProperty('TransactionID')
       
     if self.response_code.to_i > 0
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
     else
+      self.transaction_id = transaction.getProperty('TransactionID')      
       self.payment_page = transaction.getProperty('PaymentPage')
     end
     
@@ -138,12 +138,12 @@ class Payment < ActiveRecord::Base
     self.response_description = finalization.getResponseDescription
 
     self.approval_code = finalization.getProperty("ApprovalCode")    
-    self.order_id  = finalization.getProperty("OrderID")    
-    self.amount = finalization.getProperty("Amount")    
-    self.balance = finalization.getProperty("Balance")    
-    self.card_number = finalization.getProperty("CardNumber")    
-    self.card_token = finalization.getProperty("CardToken")    
-    self.account = finalization.getProperty("Account")    
+    self.payment_order_id  = finalization.getProperty("OrderID")    
+    self.payment_amount = finalization.getProperty("Amount")    
+    self.payment_balance = finalization.getProperty("Balance")    
+    self.payment_card_number = finalization.getProperty("CardNumber")    
+    self.payment_card_token = finalization.getProperty("CardToken")    
+    self.payment_account = finalization.getProperty("Account")    
     
     if self.response_code.to_i > 0
       errors.add(:base, "#{response_code}: #{response_description}")      
