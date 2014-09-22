@@ -65,7 +65,7 @@ class PaymentsController < ApplicationController
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
-      redirect_to project_payments_path, notice: "Payment of #{@payment.
+      render text: "Payment of #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
       payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
       invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
