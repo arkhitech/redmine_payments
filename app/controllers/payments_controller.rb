@@ -66,11 +66,11 @@ class PaymentsController < ApplicationController
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
 #      render layout: false
-      render text: "Thank you for the payment! \n \n Payment amount: #{@payment.
+      render text: "Thank you for the payment! <br/> <br/> Payment amount: #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
-      payment_currency} #{@payment.payment_amount}) \n Invoice: #{@payment.
-      invoice_id} \n Project: #{@payment.project.name} \n Transaction ID: #{@payment.
-      transaction_id} \n Approval Code: #{@payment.approval_code} \n Order Info: #{@payment.order_info}"
+      payment_currency} #{@payment.payment_amount}) <br/> Invoice: #{@payment.
+      invoice_id} <br/> Project: #{@payment.project.name} <br/>Transaction ID: #{@payment.
+      transaction_id} <br/> Approval Code: #{@payment.approval_code} <br/> Order Info: #{@payment.order_info}"
       return
       
 #            render text: "Payment of #{@payment.
