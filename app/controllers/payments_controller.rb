@@ -72,6 +72,14 @@ class PaymentsController < ApplicationController
       invoice_id} \n Project: #{@payment.project.name} \n Transaction ID: #{@payment.
       transaction_id} \n Approval Code: #{@payment.approval_code} \n Order Info: #{@payment.order_info}"
       return
+      
+#            render text: "Payment of #{@payment.
+#      invoice_currency} #{@payment.invoice_amount} (#{@payment.
+#      payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
+#      invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
+#      transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}#"
+#      return
+
     end
     #else for all
     render 'generate'    
