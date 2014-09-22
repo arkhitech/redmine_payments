@@ -65,11 +65,12 @@ class PaymentsController < ApplicationController
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
-      render text: "Payment of #{@payment.
+      render layout: false
+      render text: "Thank you for the payment! \n Payment amount: #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
-      payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
-      invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
-      transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}"
+      payment_currency} #{@payment.payment_amount}) \n Invoice: #{@payment.
+      invoice_id} \n Project: #{@payment.project.name} \n Transaction ID: #{@payment.
+      transaction_id} \n Approval Code: #{@payment.approval_code} \n Order Info: #{@payment.order_info}"
       return
     end
     #else for all

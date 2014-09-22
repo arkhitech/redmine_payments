@@ -1,0 +1,27 @@
+<h1>Thank you for the payment!</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Payment amount</th>
+      <th>Invoice</th>
+      <th>project</th>
+      <th>Transaction</th>
+      <th>Approval Code</th>
+      <th>Order Info</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+        <td><%= @payment.invoice_currency + " " + @payment.invoice_amount%></td>
+        <td><%= @payment.invoice_id %></td>
+        <td><%= @payment.project.name %></td>
+        <td><%= @payment.transaction_id %></td>
+        <td><%= @payment.approval_code %></td>
+        <td><%= @payment.order_info %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
