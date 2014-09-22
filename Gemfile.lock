@@ -1,0 +1,58 @@
+GIT
+  remote: https://github.com/philister/moneyjs-rails.git
+  revision: a463cc5a851d522e9f6c70cde2aa1fbd18562132
+  specs:
+    moneyjs-rails (0.0.1)
+
+GEM
+  specs:
+    actionpack (4.1.2)
+      actionview (= 4.1.2)
+      activesupport (= 4.1.2)
+      rack (~> 1.5.2)
+      rack-test (~> 0.6.2)
+    actionview (4.1.2)
+      activesupport (= 4.1.2)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+    activesupport (4.1.2)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    base_app (1.0.5)
+    builder (3.2.2)
+    credit_card_validator (1.2.0)
+      base_app (>= 1.0.5)
+    erubis (2.7.0)
+    fancybox-rails (0.2.1)
+      railties (>= 3.1.0)
+    i18n (0.6.11)
+    json (1.8.1)
+    minitest (5.4.1)
+    open_exchange_rates (0.4.0)
+      yajl-ruby
+    rack (1.5.2)
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    railties (4.1.2)
+      actionpack (= 4.1.2)
+      activesupport (= 4.1.2)
+      rake (>= 0.8.7)
+      thor (>= 0.18.1, < 2.0)
+    rake (10.3.2)
+    thor (0.19.1)
+    thread_safe (0.3.4)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    yajl-ruby (1.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  credit_card_validator
+  fancybox-rails
+  moneyjs-rails!
+  open_exchange_rates

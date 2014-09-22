@@ -1,17 +1,12 @@
 <h2>Make Payment</h2>
 <%= error_messages_for @payment%>
-<%= labelled_form_for [@payment.project, @payment] do |f| %>
+<%= labelled_form_for @payment, url: register_project_payments_path(@payment.project) do |f| %>
   <div class="box tabular">
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
     <p><%= f.text_field :customer_name %></p>
     <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= @payment.remaining_balance_to_s%></p> 
     <p><%= f.text_field :payment_amount %></p>
-    <p><%= f.text_field :cc_number %></p>
-    <p><%= f.date_select :expiry_date, discard_day: true, start_year: Date.today.year, 
-      end_year: (Date.today.year+10), use_month_numbers: true %>
-    </p>
-    <p><%= f.text_field :cvv2 %></p>
   </div>
   <p class="buttons">
     <%= f.button l(:make_payment)%>
@@ -34,9 +29,3 @@
       });
     })
   </script>
-  
-  <script>
-  $('.fancybox').fancybox();
-</script>
-
-    
