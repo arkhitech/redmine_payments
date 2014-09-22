@@ -75,6 +75,7 @@ class Payment < ActiveRecord::Base
   end
   
   def payment_amount
+    puts "Invoice Amount: #{invoice_amount}, from: #{invoice_currency}, to: #{payment_currency})"
     read_attribute(:payment_amount) || write_attribute(:payment_amount, 
       '%.2f'%fx.convert(invoice_amount, from: invoice_currency, to: payment_currency))
   end

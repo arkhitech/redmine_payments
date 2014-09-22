@@ -1,12 +1,19 @@
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'jquery.fancybox.css', :plugin => 'redmine_payments' %>
+<% end %>
+
 <%=render partial: 'partial_payment_form'%>
 
-<div class="fancybox">
+<div class="fancybox payment-gateway">
 <h2>Please wait while we redirect you for payment processing...</h2>
 <%=form_tag @payment.payment_page, id: 'redirect_form' do%>
   <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
 <%end%>
 </div>
+<%= javascript_include_tag 'jquery.fancybox.pack.js', plugin: 'redmine_payments' %>
 <script>
-  $('#redirect_form').submit();
-  $('.fancybox').fancybox();
+  $(document).ready(function() {
+    $('#redirect_form').submit();
+    $('.payment-gateway').fancybox().trigger('click');    
+  });
 </script>

@@ -23,7 +23,6 @@ class PaymentsController < ApplicationController
 
   def generate
     invoice = Invoice.includes(:contact).where(project_id: @project.id, id: params[:invoice_id]).first
-    puts invoice
     @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
       invoice_currency: invoice.currency,
       payment_currency: Setting.plugin_redmine_payments['payment_currency'],
@@ -54,9 +53,10 @@ class PaymentsController < ApplicationController
     if @payment.save
       @payment.return_path = finalize_project_payment_url(@project.id, @payment)
       @payment.transaction_for_registration
-      render 'register'
+      
+      render 'register'      
       return
-    end
+    end      
     render 'generate'
   end
   

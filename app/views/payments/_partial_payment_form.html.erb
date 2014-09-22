@@ -1,6 +1,6 @@
 <h2>Make Payment</h2>
 <%= error_messages_for @payment%>
-<%= labelled_form_for @payment, url: register_project_payments_path(@payment.project) do |f| %>
+<%= labelled_form_for @payment, url: register_project_payments_path(@payment.project), html: {method: :post} do |f| %>
   <div class="box tabular">
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
