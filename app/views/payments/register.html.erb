@@ -8,7 +8,7 @@
   <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
   <%=hidden_field_tag 'Style', 'STL:18'%>
 <%end%>
-<iframe name="payment-frame" class="fancybox payment-gateway" scrolling="no" style='width:800px;height:480px;'>
+<iframe name="payment-frame" class="fancybox payment-gateway" scrolling="no" style='width:800px;height:500px;'>
 </iframe>
 <%= javascript_include_tag 'jquery.fancybox.pack.js', plugin: 'redmine_payments' %>
 <script>
