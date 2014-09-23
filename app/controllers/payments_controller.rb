@@ -65,20 +65,12 @@ class PaymentsController < ApplicationController
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
-#      render layout: false
-      render text: "Thank you for the payment! <br/> <br/> Payment amount: #{@payment.
+      render text: "<table> <h1> Thank you for the payment! </h1> <tr> <th> Payment amount: </th> <td> #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.
-      payment_currency} #{@payment.payment_amount}) <br/> Invoice: #{@payment.
-      invoice_id} <br/> Project: #{@payment.project.name} <br/>Transaction ID: #{@payment.
-      transaction_id} <br/> Approval Code: #{@payment.approval_code} <br/> Order Info: #{@payment.order_info}"
+      payment_currency} #{@payment.payment_amount}) </td> </tr> <tr> <th> Invoice: </th> <td> #{@payment.
+      invoice_id} </td> </tr> <tr> <th> Project: </th> <td> #{@payment.project.name} </td> </tr> <tr> <th> Transaction ID: </th> <td> #{@payment.
+      transaction_id} </td> </tr> <tr> <th> Approval Code: </th> <td> #{@payment.approval_code} </td> </tr> <tr> <th> Order Info: </th> <td> #{@payment.order_info} </td> </tr> </table>" 
       return
-      
-#            render text: "Payment of #{@payment.
-#      invoice_currency} #{@payment.invoice_amount} (#{@payment.
-#      payment_currency} #{@payment.payment_amount}) applied for Invoice: #{@payment.
-#      invoice_id} Project: #{@payment.project.name} - Transaction ID: #{@payment.
-#      transaction_id}, Approval Code: #{@payment.approval_code}, Order Info: #{@payment.order_info}#"
-#      return
 
     end
     #else for all

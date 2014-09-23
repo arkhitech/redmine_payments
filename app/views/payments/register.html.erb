@@ -6,6 +6,7 @@
 
 <%=form_tag @payment.payment_page, id: 'redirect_form', target: 'payment-frame' do%>
   <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
+  <%=hidden_field_tag 'Style', 'STL:18'%>
 <%end%>
 <iframe name="payment-frame" class="fancybox payment-gateway" scrolling="no" style='width:500px;height:380px;'>
 </iframe>
