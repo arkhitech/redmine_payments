@@ -85,7 +85,7 @@ class Payment < ActiveRecord::Base
   end
   
   def order_id
-    invoice_id
+    "#{invoice_id}-#{id}"
   end
   def order_name
     invoice.subject
