@@ -75,20 +75,20 @@ class Payment < ActiveRecord::Base
   end
   
   def payment_amount
-    puts "Invoice Amount: #{invoice_amount}, from: #{invoice_currency}, to: #{payment_currency})"
     read_attribute(:payment_amount) || write_attribute(:payment_amount, 
-      '%.2f'%fx.convert(invoice_amount, from: invoice_currency, to: payment_currency))
+      '%.2f'%fx.convert(invoice_amount||0, from: invoice_currency, to: payment_currency))
   end
   
   def order_info
-    invoice.description
+    invoice.description[0..255]
   end
   
   def order_id
-    "#{invoice_id}-#{id}"
+    "#{invoice_id}-#{id}"[0..15]
   end
+
   def order_name
-    invoice.subject
+    invoice.subject.to_s[0..24]
   end
   
   def transaction_for_registration
@@ -98,16 +98,29 @@ class Payment < ActiveRecord::Base
 
     transaction = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
     transaction.initialize(STATE_REGISTRATION,"1.0");
-    transaction.setProperty("Customer", self.customer_name.to_s)
+
+    transaction.setProperty("Channel", 'Web')
     transaction.setProperty("Amount", self.payment_amount.to_s)
     transaction.setProperty("Currency", payment_currency.to_s)
 
     transaction.setProperty("OrderName", order_name.to_s)
     transaction.setProperty("OrderInfo", order_info.to_s)
-    transaction.setProperty("OrderID", "#{order_id.to_s}")
-		transaction.setProperty("TransactionHint", "CPT:Y;VCC:Y")
+    transaction.setProperty("OrderID", "#{order_id}")
+    transaction.setProperty("TransactionHint", "CPT:Y;VCC:Y")
     transaction.setProperty("ReturnPath", return_path)
-    
+
+    logger.error("Customer: #{transaction.getProperty('Customer')}")
+    #logger.error("Store: #{transaction.getProperty('Store')}")
+    #logger.error("Terminal: #{transaction.getProperty('Terminal')}")
+    logger.error("Channel: #{transaction.getProperty('Channel')}")
+    logger.error("Amount: #{transaction.getProperty('Amount')}")
+    logger.error("Currency: #{transaction.getProperty('Currency')}")
+    logger.error("OrderName: #{transaction.getProperty('OrderName')}")
+    logger.error("OrderInfo: #{transaction.getProperty('OrderInfo')}")
+    logger.error("OrderID: #{transaction.getProperty('OrderID')}")
+    logger.error("TransactionHint: #{transaction.getProperty('TransactionHint')}")
+    logger.error("ReturnPath: #{return_path}")
+
     result = transaction.execute()
     self.response_code = transaction.getResponseCode
     self.response_description = transaction.getResponseDescription
@@ -130,8 +143,8 @@ class Payment < ActiveRecord::Base
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
 
     finalization = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
-    finalization.initialize("Finalization","1.0");
-    finalization.setProperty("Customer", self.customer_name.to_s)
+    finalization.initialize(STATE_FINALIZATION,"1.0");
+
     finalization.setProperty("TransactionID", self.transaction_id.to_s)
 		    
     result = finalization.execute()
@@ -167,7 +180,8 @@ class Payment < ActiveRecord::Base
 
     transaction = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties");
     transaction.initialize(STATE_AUTHORIZATION,"1.0");
-    transaction.setProperty("Customer", self.customer_name.to_s)
+    #logger.error("Customer is: #{transaction.getProperty('Customer')}")
+    #transaction.setProperty("Customer", self.customer_name.to_s)
     transaction.setProperty("Amount", self.payment_amount.to_s)
     transaction.setProperty("Currency", payment_currency.to_s)
     transaction.setProperty("CardNumber", self.cc_number.to_s)

@@ -74,7 +74,7 @@ class PaymentsController < ApplicationController
 
     end
     #else for all
-    render 'generate'
+    render 'payment_errors', layout: false
   end
   
   private
