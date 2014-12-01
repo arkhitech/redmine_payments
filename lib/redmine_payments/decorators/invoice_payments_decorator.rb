@@ -8,9 +8,9 @@ module RedminePayments
           unloadable
           skip_before_filter :authorize, :only => [:show]
           before_filter :authorize_index_show, :only => [:index, :show]
-#          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
+          #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
           #    accept_api_auth :index, :show, :create, :update, :destroy ,:view ,:edit
-         # before_filter :find_invoice_payment, :except => [ :edit, :index, :show, :create]
+          # before_filter :find_invoice_payment, :except => [ :edit, :index, :show, :create]
         end
       end
 
@@ -38,34 +38,23 @@ module RedminePayments
           end
         end
         def show
-           if params[:id]
-                @invoice_payments = InvoicePayment.where("id=?",params[:id])
-                params[:description]=@invoice_payments.first.description
+          if params[:id]
+            @invoice_payments = InvoicePayment.where("id=?",params[:id])
+            params[:description]=@invoice_payments.first.description
           end
         end
         def edit
           
-#          if params[:description]
-#                  @invoice_payments = InvoicePayment.where("id=?",params[:id])
-#                  @invoice_payments.first.description=params[:description] 
-#                    attachments = Attachment.attach_files(@invoice_payment.first, (params[:attachments] || (params[:invoice_payment] && params[:invoice_payment][:uploads])))
-#      render_attachment_warning_if_needed(@invoice_payment.first)
-#
-#                  @invoice_payments.first.save!
-#          end
- @invoice_payments = InvoicePayment.where("id=?",params[:id])
- s=params[:invoice_payment] 
-           @invoice_payments.first.description=s[:description]
-            @invoice_payments.first.save!
-  attachments = Attachment.attach_files(@invoice_payments.first, (params[:attachments]     ))
-      render_attachment_warning_if_needed(@invoice_payments.first)
+        
+          @invoice_payments = InvoicePayment.where("id=?",params[:id])
+          s=params[:invoice_payment] 
+          @invoice_payments.first.description=s[:description]
+          @invoice_payments.first.save!
+          attachments = Attachment.attach_files(@invoice_payments.first, (params[:attachments]     ))
+          render_attachment_warning_if_needed(@invoice_payments.first)
 
-#                    attachments = Attachment.attach_files(@invoice_payment, (params[:attachments] || (params[:invoice_payment] && params[:invoice_payment][:uploads])))
-#      render_attachment_warning_if_needed(@invoice_payment)
-
-#                  @invoice_payments.save!
           flash.now[:success]="Record Updated"
-              redirect_to action: :index
+          redirect_to action: :index
 
         end
        

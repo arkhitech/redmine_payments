@@ -26,15 +26,16 @@
           <%#*</table>%>
         <%#*</fieldset>%>
       <div>   
+       
      <p><%= f.text_field :description, :style => "width: 98%;" %></p>
 <p><%= submit_tag l(:button_save) -%></p>
 </div> 
       <fieldset><legend><%= l(:label_attachment_plural) %></legend>
-<% if @invoice_payment.attachments.any? -%>
-  <%= link_to_attachments @invoice_payment, :thumbnails => true %>
-<% end %>
+<%# if @invoice_payments.first.attachments.any? -%>
+  <%#= link_to_attachments @invoice_payments.first, :thumbnails => true %>
+<%# end %>
 
-<p><%= render :partial => 'attachments/form', :locals => {:container => @invoice_payment} %></p>
+<p><%= render :partial => 'attachments/form', :locals => {:container => @invoice_payments.first} %></p>
 </fieldset>  
       
        
