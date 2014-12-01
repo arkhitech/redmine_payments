@@ -2,14 +2,40 @@
 <table>  
   <tr>
     <td><legend>Invoice Currency</legend></td>
-    <td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
-  </tr>
-  <tr>
-    <td><legend>Payment Currency</legend></td>
-    <td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
-  </tr>
-  <tr>
-    <td><legend>OpenExchangeRate App ID</legend></td>
-    <td><%= text_field_tag('settings[open_exchange_rate_app_id]', settings['open_exchange_rate_app_id']) %></td>
-  </tr>
+<td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
+</tr>
+<tr>
+  <td><legend>Payment Currency</legend></td>
+<td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
+</tr>
+<tr>
+  <td><legend>OpenExchangeRate App ID</legend></td>
+<td><%= text_field_tag('settings[open_exchange_rate_app_id]', settings['open_exchange_rate_app_id']) %></td>
+</tr>
+
+<tr>
+  <td><legend>Show in top menu</legend></td>
+<td> <%= check_box_tag 'settings[payment_invoices_show_payment_invoices_in_top_menu]', 1, @settings["payment_invoices_show_payment_invoices_in_top_menu"] %>
+  <%= "Payment Invoices" %>
+</td>
+</tr>
+
+<tr>
+  <td><legend>Show in app menu</legend></td>
+<td>
+  <%= check_box_tag 'settings[payment_invoices_show_payment_in_app_menu]', 1, @settings["payment_invoices_show_payment_in_app_menu"] %>
+  <%= "Payment Invoices" %>
+</td>
+</tr>
+
+<tr>
+  <td><legend>Show in project menu</legend></td>
+<td>
+  <%= check_box_tag 'settings[payment_invoices_show_payment_in_project_menu]', 1, @settings["payment_invoices_show_payment_in_project_menu"] %>
+  <%= "Payment Invoices" %>
+</td>
+</tr>
+
 </table>
+
+
