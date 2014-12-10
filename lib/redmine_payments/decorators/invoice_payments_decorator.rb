@@ -33,7 +33,7 @@ module RedminePayments
             #show invoices for all projects that user is authorized to see
             invoice_payments = InvoicePayment.includes(:invoice => :project).all
             @invoice_payments = invoice_payments.delete_if do |ip| 
-              !User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project)
+              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
             end
           end
         end
