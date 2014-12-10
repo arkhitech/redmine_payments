@@ -80,7 +80,7 @@ class Payment < ActiveRecord::Base
   end
   
   def order_info
-    invoice.description[0..255]
+    invoice.description[0..255].gsub(/\r|\n|\t/," ").strip
   end
   
   def order_id

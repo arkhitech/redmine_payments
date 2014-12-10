@@ -9,7 +9,7 @@ class TransactionsController < ApplicationController
 
     transaction = transaction_class.new("#{ENV['JAVA_HOME']}/jre/lib/SPI.properties");
     transaction.initialize("Registration","1.0");
-    transaction.setProperty("Customer", "Demo Merchant");
+    #transaction.setProperty("Customer", "Arkhitech");
     transaction.setProperty("Amount", "12.23");
     transaction.setProperty("Currency", "PKR");
     transaction.setProperty("CardNumber", "999000000000011");

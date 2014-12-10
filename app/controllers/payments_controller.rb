@@ -12,27 +12,33 @@ class PaymentsController < ApplicationController
   end
   
   def new    
-    invoice = Invoice.includes(:contact).where(project_id: @project.id, id: params[:invoice_id]).first
+    return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
+      User.current.admin?
+    invoice = Invoice.includes(:contact).where(project_id: @project.self_and_descendants.map(&:id), id: params[:invoice_id]).first
     @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
       invoice_currency: invoice.currency,
       payment_currency: Setting.plugin_redmine_payments['payment_currency'],
-      invoice: invoice, project: @project)
+      invoice: invoice, project_id: invoice.project_id)
     @payment.payment_amount
     @payment.customer_name = invoice.contact.name unless invoice.contact.nil?
   end
 
   def generate
-    invoice = Invoice.includes(:contact).where(project_id: @project.id, id: params[:invoice_id]).first
+    return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
+      User.current.admin?
+    invoice = Invoice.includes(:contact).where(project_id: @project.self_and_descendants.map(&:id), id: params[:invoice_id]).first
     @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
       invoice_currency: invoice.currency,
       payment_currency: Setting.plugin_redmine_payments['payment_currency'],
-      invoice: invoice, project: @project)
+      invoice: invoice, project_id: invoice.project_id)
     @payment.payment_amount
     @payment.customer_name = invoice.contact.name unless invoice.contact.nil?
     
   end
   
   def create
+    return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
+      User.current.admin?
     @payment = Payment.new(params[:payment])
     @payment.state = Payment::STATE_AUTHORIZATION
     
@@ -61,7 +67,7 @@ class PaymentsController < ApplicationController
   end
   
   def finalize
-    @payment = Payment.find_by_project_id_and_id(@project.id, params[:id])    
+    @payment = Payment.where(project_id: @project.self_and_descendants.map(&:id), id: params[:id]).first
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
     if @payment.save
