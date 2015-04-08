@@ -80,7 +80,7 @@ class Payment < ActiveRecord::Base
   end
   
   def order_info
-    invoice.description[0..255].gsub(/\r|\n|\t/," ").strip
+    invoice.description[0..255].gsub(/\r|\n|\t/," ").strip.encode("ISO-8859-1", invalid: :replace, undef: :replace, replace: "?")
   end
   
   def order_id
