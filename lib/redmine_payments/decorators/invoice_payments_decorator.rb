@@ -6,6 +6,7 @@ module RedminePayments
         
         base.class_eval do
           unloadable
+          menu_item :invoice_payments
           skip_before_filter :authorize, :only => [:show]
           before_filter :authorize_index_show, :only => [:index, :show]
           #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
@@ -20,23 +21,52 @@ module RedminePayments
           global = @project.nil?
           authorize(params[:controller], params[:action], global)
         end
-        def index          
+        
+        def index  
           if params[:project_id]
+            if !(User.current.admin? || 
+                  User.current.allowed_to?(:list_and_edit_invoice_payments , @project)
+                  User.current.allowed_to?(:make_payment , @project)
+              )
+              deny_access
+              return
+            end
+            
             @invoice_payments = InvoicePayment. 
               joins("INNER JOIN #{Invoice.table_name} on #{Invoice.table_name}.id= #{InvoicePayment.table_name}.invoice_id")
             .joins("INNER JOIN #{Project.table_name} on #{Project.table_name}.id= #{Invoice.table_name}.project_id")
             .where("#{Project.table_name}.identifier=?",params[:project_id])
-            #show invoices for project that user is authorized to see
-            #            @invoice_payments = InvoicePayment.where("invoice_id=?",params[:invoice_id])
-            
           else
             #show invoices for all projects that user is authorized to see
-            invoice_payments = InvoicePayment.includes(:invoice => :project).all
-            @invoice_payments = invoice_payments.delete_if do |ip| 
-              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
+            allowed_project_ids = allowed_to_projects(:list_and_edit_invoice_payments).map(&:id)
+            allowed_project_ids |= allowed_to_projects(:make_payment).map(&:id)
+            
+            
+            @invoice_payments = InvoicePayment.includes(invoice: :project).
+              where("#{Invoice.table_name}.project_id" => allowed_project_ids)
+            
+#            @invoice_payments = invoice_payments.delete_if do |ip| 
+#              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
+#            end
+          end
+          @tasks_grid = initialize_grid(@invoice_payments)
+        end
+        
+        def allowed_to_projects(permission)
+          if User.current.admin?
+            return Project.all
+          end
+          allowed_projects = []
+          projects_by_role = User.current.projects_by_role
+          projects_by_role.each_pair do |role, projects|
+            if role.allowed_to?(permission)
+              allowed_projects = projects
             end
           end
+          allowed_projects
         end
+        private :allowed_to_projects
+        
         def show
           if params[:id]
             @invoice_payments = InvoicePayment.where("id=?",params[:id])

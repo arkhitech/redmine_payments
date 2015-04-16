@@ -1,0 +1,25 @@
+label
+{
+    display: inline-block;
+    font-size: 14px;
+    margin-left: 20px;
+    width: 125px;
+}
+.criteria .wg-detached-filter .custom-dropdown-container
+  { display: inline;}
+ .criteria .wg-detached-filter .date-filter
+  { display: inline;}
+.criteria
+{
+  margin-left: 0px;
+}
+
+.criteria input { width: 200px;}
+
+ .criteria .date-filter br { display: none;}
+ button{
+   margin-left: 20px;
+ }
+ h3{
+   margin-left: 10px;
+ }
