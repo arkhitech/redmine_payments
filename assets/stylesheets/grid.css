@@ -1,7 +1,7 @@
 label
 {
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
     margin-left: 20px;
     width: 125px;
 }
@@ -14,12 +14,15 @@ label
   margin-left: 0px;
 }
 
-.criteria input { width: 200px;}
+.criteria input { width: 200px; height:15px }
 
  .criteria .date-filter br { display: none;}
  button{
-   margin-left: 20px;
+   margin-left: 15px;
+   height: 28px;
+   text-justify: auto;
  }
  h3{
-   margin-left: 10px;
+   
+   margin-left:5px;
  }
