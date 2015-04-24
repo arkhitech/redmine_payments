@@ -3,26 +3,35 @@
 <%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
 <%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
 <%= javascript_include_tag 'application', :plugin => 'redmine_wice_grid' %>
+<%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
 <% end %>
 
 <%= render partial: 'grid' %>
 
 <h2><%= "Invoice Payments"%></h2>
-<h3>Filter your search below:</h3><br>
-<label>ID             : </label> <span class="criteria"> <%=  grid_filter @tasks_grid, :id_filter %></span><br>
-<label>Amount         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :amount_filter %></span><br>
-<label>Payment Date   : </label> <span class="criteria"><%= grid_filter @tasks_grid, :paymentdate_filter %></span><br>
+<br>
+<fieldset id="fs">
+<legend id="filtertoggle">filters</legend>
+<br>
+<div id="filters_div" style="display: none">
+<div id="left">
 <label>Invoice Number : </label><span class="criteria"> <%= grid_filter @tasks_grid, :invoicenumber_filter %></span><br>
-<label>Description    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :Description_filter %></span><br>
+<label>Amount         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :amount_filter %></span><br>
 <label>Author Name    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :author_filter %></span><br>
+</div>
+  <div id="center">
+<label>Description    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :Description_filter %></span><br>
+<label>Payment Date   : </label> <span class="criteria"><%= grid_filter @tasks_grid, :paymentdate_filter %></span><br>
 <label>Created at     :</label><span class="criteria"> <%= grid_filter @tasks_grid, :createdAt_filter %></span><br>
 <label>Updated At     : </label> <span class="criteria"><%= grid_filter @tasks_grid, :updatedAt_filter %></span>
-
-<br>
+  </div>
+  <div class="clear"></div>
 <br>
 <button class="wg-external-submit-button" data-grid-name="grid">Submit</button>
 <button class="wg-external-reset-button" data-grid-name="grid">Reset</button> 
 <br>
+</div>
+</fieldset>
 <br>
 <%=render_grid(@tasks_grid) %>
 
