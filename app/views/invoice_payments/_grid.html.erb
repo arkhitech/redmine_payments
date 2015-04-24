@@ -1,4 +1,5 @@
-<%=define_grid(@tasks_grid, hide_submit_button: true, hide_reset_button: true ,:show_filters => :always) do |g|
+
+<%=define_grid(@tasks_grid, hide_submit_button: true, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
 
     
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
