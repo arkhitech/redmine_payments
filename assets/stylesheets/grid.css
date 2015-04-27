@@ -67,5 +67,9 @@ label
    {
     background-color: #EEE;
     padding: 4px;
-    white-space: nowrap;
+    text-align:left;
+   }
+   .wg-show-all-link
+   {
+     display: none;
    }
