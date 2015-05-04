@@ -88,7 +88,12 @@ class Payment < ActiveRecord::Base
   end
 
   def order_name
-    invoice.subject.to_s[0..24]
+    if invoice.subject =~ /^\d+/
+      #order name is expected to start with alphabets
+      "invoice-#{invoice.subject}".to_s[0..24]
+    else
+      invoice.subject.to_s[0..24]
+    end
   end
   
   def transaction_for_registration
