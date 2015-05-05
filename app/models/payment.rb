@@ -1,4 +1,5 @@
 class Payment < ActiveRecord::Base
+  
   attr_accessor :cc_number, :cvv2
   attr_accessor :state
   attr_accessor :return_path
@@ -18,7 +19,6 @@ class Payment < ActiveRecord::Base
   belongs_to :project
   
   #before_create :execute
-  
   validate :validate_credit_card
   validates :cc_number, :expiry_date, :cvv2, presence: true, if: 'state == STATE_AUTHORIZATION'
     
@@ -26,7 +26,7 @@ class Payment < ActiveRecord::Base
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
-    
+  
   before_save do
     if self.state == STATE_REGISTRATION
 #      transaction_for_registration
@@ -214,5 +214,4 @@ class Payment < ActiveRecord::Base
     
     !errors.any?    
   end
-  
 end
