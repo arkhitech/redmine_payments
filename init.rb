@@ -1,5 +1,11 @@
 require 'redmine'
 Rails.configuration.to_prepare do
+   require_dependency 'project'
+  Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
+  
+  require_dependency 'invoice'
+  Invoice.send(:include, RedminePayments::Decorators::InvoiceDecorator)
+  
   require_dependency 'invoice_payments_controller'
   InvoicePaymentsController.send(:include, RedminePayments::Decorators::InvoicePaymentsDecorator)
 

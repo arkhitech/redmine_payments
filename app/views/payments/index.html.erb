@@ -1,4 +1,32 @@
-<h2>Pending Invoices</h2>
+<%= javascript_include_tag 'bootstrap', :plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'bootstrap',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'bootstrap-theme',:plugin => 'redmine_payments' %>
+<div id="heading">
+  <h2 id="leftt_title">Pending Invoices</h2>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Share
+</button>
+</div>
+<br>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       <h3 class="modal-title">Shareable Payments Link</h3>
+       <br>
+      </div>
+      <div class="modal-body">
+        <p id="payment_url"><%= shared_project_payments_url(@project_token) %></p>
+      </div>
+      <div class="modal-footer">
+        <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
+      </div>
+    </div>
+  </div>
+</div>
 <%unless @invoices.any?%>
 <strong>Yay! No pending invoice found.</strong>
 <%else%>

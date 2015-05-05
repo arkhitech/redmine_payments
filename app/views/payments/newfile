@@ -1,0 +1,10 @@
+def generate_project_invoice_token
+      @project_token = project.generate_token
+    render 'index'
+  end
+  def generate_invoice_payment_token
+     @token = invoice.generate_token
+      render 'generate'
+  end
+<%= button_to 'Reset URL',{action: "generate_project_invoice_token", :project => @project }, remote: true %>
+<%= button_to 'Reset URL',action: "generate_invoice_payment_token", remote: true %>
