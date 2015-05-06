@@ -1,7 +1,8 @@
 class PaymentsController < ApplicationController
   unloadable
-  skip_before_filter :verify_authenticity_token, only: :finalize
-  
+  #skip_before_filter :authenticate_user, only: [:shared_invoice,:shared_project]
+  skip_before_filter :check_if_login_required, only: [:shared_invoice,:shared_project,:generate]
+  skip_before_filter :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
   before_filter :find_project, except: [:shared_invoice,:shared_project,:generate_invoice_payment_token]
   def index
     return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
