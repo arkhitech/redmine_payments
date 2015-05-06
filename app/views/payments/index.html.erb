@@ -1,4 +1,5 @@
 <%= javascript_include_tag 'bootstrap', :plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'clipboard', :plugin => 'redmine_payments' %>
 <%= stylesheet_link_tag 'bootstrap',:plugin => 'redmine_payments' %>
 <%= stylesheet_link_tag 'bootstrap-theme',:plugin => 'redmine_payments' %>
 <div id="heading">
@@ -19,7 +20,9 @@
        <br>
       </div>
       <div class="modal-body">
-        <p id="payment_url"><%= shared_project_payments_url(@project_token) %></p>
+        <textarea id="payment_url" rows="1" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
+       <br>
+        <input type="button" id="copy" name="copy" onclick="copyToClipboardCrossbrowser(document.getElementById('payment_url').value);" value="Copy to Clipboard" />
       </div>
       <div class="modal-footer">
         <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
@@ -66,7 +69,7 @@
           <% if User.current.allowed_to?(:make_payment, @project) || User.current.admin? %>
             <td><%= link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id) %></td>
           <% else %>
-            <td>Not Allowed</td>
+           <td><%= link_to 'Pay',shared_invoice_payments_path(invoice.token || invoice.generate_token)%></td>
           <% end %>
         </tr>
       <% end %>
