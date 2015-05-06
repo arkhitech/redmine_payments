@@ -1,5 +1,5 @@
 <%= javascript_include_tag 'bootstrap', :plugin => 'redmine_payments' %>
-<%= javascript_include_tag 'clipboard', :plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'ZeroClipboard.min.js', :plugin => 'redmine_payments' %>
 <%= stylesheet_link_tag 'bootstrap',:plugin => 'redmine_payments' %>
 <%= stylesheet_link_tag 'bootstrap-theme',:plugin => 'redmine_payments' %>
 <div id="heading">
@@ -20,9 +20,9 @@
        <br>
       </div>
       <div class="modal-body">
-        <textarea id="payment_url" rows="1" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
+        <textarea id="payment_url" rows="2" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
        <br>
-        <input type="button" id="copy" name="copy" onclick="copyToClipboardCrossbrowser(document.getElementById('payment_url').value);" value="Copy to Clipboard" />
+       <input type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link" />
       </div>
       <div class="modal-footer">
         <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
@@ -76,3 +76,18 @@
     </tbody>
   </table>
 <%end%>
+<script>
+  var client = new ZeroClipboard( document.getElementById("copy") );
+
+  client.on( "ready", function( readyEvent ) {
+    // alert( "ZeroClipboard SWF is ready!" );
+
+    client.on( "aftercopy", function( event ) {
+      // `this` === `client`
+      // `event.target` === the element that was clicked
+      //event.target.style.display = "none";
+      
+    } );
+  } );
+
+  </script>
