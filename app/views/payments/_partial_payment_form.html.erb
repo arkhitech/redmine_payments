@@ -1,20 +1,17 @@
 <%= javascript_include_tag 'ZeroClipboard.min.js', :plugin => 'redmine_payments' %>
-<%= javascript_include_tag 'bootstrap', :plugin => 'redmine_payments' %>
-<%= stylesheet_link_tag 'bootstrap',:plugin => 'redmine_payments' %>
-<%= stylesheet_link_tag 'bootstrap-theme',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'jquery.fancybox.css',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'shareable_link_fancybox.css',:plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'jquery.fancybox.pack.js',:plugin => 'redmine_payments' %>
 <!-- Button trigger modal -->
 <div id="heading">
   <h2 id="left_title">Make Payment</h2>
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Share
-</button>
+  <input type="button" id="Share_button" value="Share"> 
 </div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+
+<div style="display:none;" class="modal fade">
+  <div class="modal-dialog" id="mybox">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
        <h3 class="modal-title">Shareable Link</h3>
        <br>
       </div>
@@ -58,6 +55,11 @@
         result = parseFloat(Math.round(result * 100) / 100).toFixed(2);
         $('#payment_invoice_amount').val(result);
       });
+       $('#Share_button').on('click', function() {
+        $.fancybox({
+          href : '#mybox'
+        }); 
+    });
     });
     
    var client = new ZeroClipboard( document.getElementById("copy") );
@@ -72,5 +74,4 @@
       
     } );
   } );
-
   </script>
