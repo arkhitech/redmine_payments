@@ -16,19 +16,19 @@ resources :projects do
     member do
       match :finalize      
     end
+    collection do
+      get  'shared_invoice/:token' => 'payments#shared_invoice', as: :shared_invoice
+      get  'shared_project/:token' => 'payments#shared_project', as: :shared_project
+    end
   end
-  #  resources :invoice_payments
-end
- resources :payments, only: [] do
-  collection do
-    get  'shared_invoice/:token' => 'payments#shared_invoice', as: :shared_invoice
-   
+  
+  resources :copy_invoices, only: [:index] 
+  resources :invoices, only: [] do
+    member do
+      get :copy
+    end
   end
-end
-  resources :payments, only: [] do
-  collection do
-    get  'shared_project/:token' => 'payments#shared_project', as: :shared_project
-  end
+  
 end
 
 resources :invoice_payments, only: [:show, :index] do
@@ -38,4 +38,4 @@ resources :invoice_payments, only: [:show, :index] do
 end
 match "/finalize", to: "payments#finalize"
 
-
+ 

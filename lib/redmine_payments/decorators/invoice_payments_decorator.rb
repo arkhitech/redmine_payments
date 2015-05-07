@@ -7,7 +7,9 @@ module RedminePayments
         base.class_eval do
           unloadable
           menu_item :invoice_payments
-          skip_before_filter :authorize, :only => [:show]
+          
+          helper PaymentsHelper
+          skip_before_filter :authorize, :only => [:show,:index]
           before_filter :authorize_index_show, :only => [:index, :show]
           #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
           #    accept_api_auth :index, :show, :create, :update, :destroy ,:view ,:edit
@@ -51,22 +53,7 @@ module RedminePayments
           end
           @tasks_grid = initialize_grid(@invoice_payments)
         end
-        
-        def allowed_to_projects(permission)
-          if User.current.admin?
-            return Project.all
-          end
-          allowed_projects = []
-          projects_by_role = User.current.projects_by_role
-          projects_by_role.each_pair do |role, projects|
-            if role.allowed_to?(permission)
-              allowed_projects = projects
-            end
-          end
-          allowed_projects
-        end
-        private :allowed_to_projects
-        
+                
         def show
           if params[:id]
             @invoice_payments = InvoicePayment.where("id=?",params[:id])
