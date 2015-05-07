@@ -28,7 +28,18 @@ resources :projects do
       get :copy
     end
   end
-  
+  #  resources :invoice_payments
+end
+ resources :payments, only: [] do
+  collection do
+    get  'shared_invoice/:token' => 'payments#shared_invoice', as: :shared_invoice
+   
+  end
+end
+  resources :payments, only: [] do
+  collection do
+    get  'shared_project/:token' => 'payments#shared_project', as: :shared_project
+  end
 end
 
 resources :invoice_payments, only: [:show, :index] do
