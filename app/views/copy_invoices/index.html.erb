@@ -1,22 +1,47 @@
+<h2><%= "Invoice Payments"%></h2>
+<div>   
 <table>
-   <br>  <br> <br> <br> 
-  <tr>
-    <th>ID</th>
-    <th>Number</th>
-    <th>      Description     </th>
-    <th>      Amount</th>
-    <th colspan="3"></th>
-  </tr>
- 
-  <% @invoice_payments.each do |invoice_payments| %>
-    <tr>
-      <td><%= invoice_payments.id %></td>
-      <td><%=invoice_payments.invoice.number %></td>
-      <td><%= invoice_payments.description %></td>
-       <td><%= invoice_payments.amount %></td>
-       <td><%= link_to 'Copy', copy_project_invoice_path(invoice_payments.invoice.project,invoice_payments.invoice.id) %></td>
-    </tr>
-    <% end %>
+    
+     <tr align="left" class="<%= cycle("odd")%>" >
+     <th><strong>Project:</strong></th>
+     <td><%=Project.find(params[:project_id]).name %></td>
+     </tr>
+    </table> 
+</div>
+<div class="autoscroll">
+  <table border="1" style="text-align:center" class="list invoice payments">
+    <thead>
+      <tr>
+        <th> ID</th>
+        <th>Amount</th>
+        <th>Payment Date</th>
+        <th>Invoice Number</th>
+        <th>Description</th>
+        <th>Author</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Copy</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <%  @invoice_payments.each do |invoice_payment| %>
+        <tr class="<%=cycle("odd", "even")%>">
+          <td><%=invoice_payment.id %></td>
+          <td><%=invoice_payment.amount%></td>
+          <td><%=format_time(invoice_payment.payment_date.to_datetime.in_time_zone(User.current.time_zone))%></td>
+          <td><%=link_to  invoice_payment.invoice.number,invoice_payment.invoice%></td>
+          <td><%=invoice_payment.description%></td>
+          <td><%=invoice_payment.author && invoice_payment.author.name%></td>
+          <td><%=format_time(invoice_payment.created_at.to_datetime.in_time_zone(User.current.time_zone))%></td>
+          <td><%=format_time(invoice_payment.updated_at.to_datetime.in_time_zone(User.current.time_zone))%></td>
+          <td><%= link_to 'Copy', copy_project_invoice_path(invoice_payment.invoice.project,invoice_payment.invoice.id) %></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+</div>
+
    
 
-</table>
+

@@ -6,7 +6,7 @@ module RedminePayments
         
         base.class_eval do
           unloadable
-          menu_item :copy_invoices
+          menu_item :invoices
           
           before_filter :find_invoice_project, :only => [:create, :new, :copy]
           before_filter :authorize, :except => [:index, :edit, :update, :destroy, :auto_complete, :client_view]
