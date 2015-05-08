@@ -53,7 +53,7 @@ Redmine::Plugin.register :redmine_payments do
   
   project_module :payments do
     permission :make_payment, {payments: [:index, :generate, :finalize, :register],
-      invoice_payments: [:index, :show], copy_invoices: [:index, :edit, :show]
+      invoice_payments: [:index, :show],
     }
     
     permission :list_and_edit_invoice_payments,  {invoice_payments: [:index, :edit, :show], copy_invoices: [:index], invoices: [:copy]}
