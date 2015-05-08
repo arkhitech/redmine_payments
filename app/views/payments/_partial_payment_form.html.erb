@@ -36,11 +36,11 @@
     
      <tr align="left" class="<%= cycle("odd")%>" >
      <th><strong>Project Name:</strong></th>
-     <td><%=Project.find(params[:project_id]).name %></td>
+     <td><%=@project.name %></td>
      </tr>
      <tr align="left" class="<%= cycle("even")%>" >
      <th><strong>Sub Project :</strong></th>
-     <td><%=Invoice.find(@payment.invoice_id).project.name %></td>
+     <td><%=@payment.invoice.project.name %></td>
      </tr>
      <tr align="left" class="<%= cycle("odd")%>" >
      <th><strong>Client Name:</strong></th>
@@ -48,7 +48,7 @@
      </tr>
      <tr align="left" class="<%= cycle("even")%>" >
      <th><strong>Invoice Number :</strong></th>
-     <td><%=Invoice.find(@payment.invoice_id).number %></td>
+     <td><%=@payment.invoice.number %></td>
      </tr>
     </table> 
 </div>
