@@ -1,0 +1,6 @@
+ table.my-grid {
+    border: 1px solid;
+  }
+  table.my-grid tr.my-header {
+    background-color: #ebebeb;
+ }

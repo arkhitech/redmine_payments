@@ -10,7 +10,7 @@ class PaymentsController < ApplicationController
     @invoices = Invoice.where("status_id = ? AND project_id IN (?)", 
       Invoice::SENT_INVOICE, @project.self_and_descendants.map(&:id))
       @project_token = @project.token || @project.generate_token
-      #@tasks_grid = initialize_grid(@invoices)
+      @tasks_grid = initialize_grid(@invoices)
     render 'index'
   end
   def shared_project
@@ -18,7 +18,7 @@ class PaymentsController < ApplicationController
     @invoices = Invoice.where("status_id = ? AND project_id IN (?)", 
      Invoice::SENT_INVOICE, @project.self_and_descendants.map(&:id))
    @project_token = @project.token || @project.generate_token
-   #@tasks_grid = initialize_grid(@invoices)
+   @tasks_grid = initialize_grid(@invoices)
     render 'index'
     #generate_project_invoice(project)
   end
