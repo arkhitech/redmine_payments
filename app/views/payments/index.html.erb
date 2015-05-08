@@ -34,6 +34,8 @@
 
 <%unless @invoices.any?%>
 <strong>Yay! No pending invoice found.</strong>
+
+    
 <%else%>
 <%= render partial: 'grid' %>
 <fieldset id="fs">
@@ -60,6 +62,7 @@
 <%=render_grid(@tasks_grid) %>
 <br>
 <%end%>
+
 <script>
   $(document).ready(function() {
         $('#Share_button').on('click', function() {

@@ -30,7 +30,29 @@
 <br>
 <%= error_messages_for @payment%>
 <%= labelled_form_for @payment, url: register_project_payments_path(@payment.project), html: {method: :post} do |f| %>
-  <div class="box tabular">
+
+<div>   
+<table>
+    
+     <tr align="left" class="<%= cycle("odd")%>" >
+     <th><strong>Project Name:</strong></th>
+     <td><%=@project.name %></td>
+     </tr>
+     <tr align="left" class="<%= cycle("even")%>" >
+     <th><strong>Sub Project :</strong></th>
+     <td><%=@payment.invoice.project.name %></td>
+     </tr>
+     <tr align="left" class="<%= cycle("odd")%>" >
+     <th><strong>Client Name:</strong></th>
+     <td><%=@payment.customer_name %></td>
+     </tr>
+     <tr align="left" class="<%= cycle("even")%>" >
+     <th><strong>Invoice Number :</strong></th>
+     <td><%=@payment.invoice.number %></td>
+     </tr>
+    </table> 
+</div>
+<div class="box tabular">
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
     <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= @payment.remaining_balance_to_s%></p> 
