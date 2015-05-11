@@ -1,5 +1,6 @@
 class PaymentsController < ApplicationController
   unloadable
+  menu_item :redmine_payments
   before_filter :find_optional_project, :only => [:show, :index]
   #skip_before_filter :authenticate_user, only: [:shared_invoice,:shared_project]
   skip_before_filter :check_if_login_required, only: [:shared_invoice,:shared_project,:generate]

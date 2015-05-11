@@ -38,8 +38,8 @@
     
 <%else%>
 <%= render partial: 'grid' %>
-<fieldset id="fs">
-<legend id="filtertoggle">filters</legend>
+<fieldset id="filters" class="collapsible collapsed">
+<legend onclick="toggleFieldset(this);">filters</legend>
 <br>
 <div id="filters_div" style="display: none">
 <div id="left">
