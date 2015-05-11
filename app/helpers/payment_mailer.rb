@@ -6,6 +6,6 @@ class PaymentMailer < ActionMailer::Base
   end  
   def notify_absentee(user)
     
-    mail(to: user.mail, subject: "payment email")
+    mail(to: user.mail, subject: "payment has been made")
   end
 end
