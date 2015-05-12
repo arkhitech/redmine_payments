@@ -17,7 +17,7 @@
   end  
   
    g.column name: 'Due Date',attribute: 'due_date',detach_with_id: :duedate_filter do |invoice|
-  invoice.due_date 
+  format_time(invoice.due_date) 
   end    
       
   g.column name: 'Currency',attribute: 'currency',detach_with_id: :currency_filter do |invoice|
