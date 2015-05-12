@@ -1,0 +1,44 @@
+<h2><%= "Invoice Payments"%></h2>
+<div>   
+<table>
+    
+     <tr align="left" class="<%= cycle("odd")%>" >
+     <th><strong>Project:</strong></th>
+     <td><%=Project.find(params[:project_id]).name %></td>
+     </tr>
+    </table> 
+</div>
+<div class="autoscroll">
+  <table border="1" style="text-align:center" class="list invoice payments">
+    <thead>
+      <tr>
+        <th> ID</th>
+        <th>Amount</th>
+        <th>Payment Date</th>
+        <th>Invoice Number</th>
+        <th>Author</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Copy</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <%  @invoices.each do |invoice| %>
+        <tr class="<%=cycle("odd", "even")%>">
+          <td><%=invoice.id %></td>
+          <td><%=invoice.amount%></td>
+          <td><%=link_to invoice.number, invoice%></td>
+          <td><%=invoice.author && invoice.author.name%></td>
+          <td><%=format_time(invoice.created_at)%></td>
+          <td><%=format_time(invoice.updated_at)%></td>
+          <td><%= link_to 'Copy', copy_project_invoice_path(invoice.project_id,invoice.id) %></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+</div>
+
+   
+
+

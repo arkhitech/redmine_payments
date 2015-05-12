@@ -1,47 +1,87 @@
-<h2>Pending Invoices</h2>
+<%= javascript_include_tag 'ZeroClipboard.min.js', :plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'jquery.fancybox.css',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'grid.css',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'shareable_link_fancybox.css',:plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'jquery.fancybox.pack.js',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
+<%= javascript_include_tag 'application', :plugin => 'redmine_wice_grid' %>
+<%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
+<div id="heading">
+  <h2 id="leftt_title">Pending Invoices</h2>
+   <input type="button" id="Share_button" value="Share"> 
+</div>
+<br>
+<!-- Modal -->
+<div style="display:none;" class="modal fade">
+  <div class="modal-dialog" id="mybox">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h3 class="modal-title">Shareable Link</h3>
+       <br>
+      </div>
+      <div class="modal-body">
+     
+        <textarea id="payment_url" rows="2" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
+        <br>
+        <input type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link" />
+      </div>
+      <div class="modal-footer">
+        <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
+      </div>
+    </div>
+  </div>
+</div>
+
 <%unless @invoices.any?%>
 <strong>Yay! No pending invoice found.</strong>
+
+    
 <%else%>
-  <table border="1" style="text-align:center">
-    <thead>
-      <tr>
-        <td>ID</td>
-        <td>Number</td>
-        <td>Invoice Date</td>
-        <td>Description</td>
-        <td>Due Date</td>
-        <td>Currency</td>
-        <td>Status</td>
-        <td>Project ID</td>
-        <td>Assigned To</td>
-        <td>Author</td>
-        <td>Subject</td>
-        <td>Amount</td>
-        <td>Action</td>
-      </tr>
-    </thead>
-    <tbody>
-      <% @invoices.each do |invoice| %>
-        <tr class="<%=cycle("odd", "even")%>">
-          <td><%= link_to invoice.id, invoice %></td>
-          <td><%= invoice.number %></td>
-          <td><%= invoice.invoice_date.localtime %></td>
-          <td><%= invoice.description %></td>
-          <td><%= invoice.due_date %></td>
-          <td><%= invoice.currency %></td>
-          <td><%= invoice.status %></td>
-          <td><%= link_to invoice.project.name, invoice.project %></td>
-          <td><%= invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to) %></td>
-          <td><%= link_to invoice.author.name, invoice.author %></td>
-          <td><%= invoice.subject %></td>
-          <td><%= invoice.amount.to_f %></td>
-          <% if User.current.allowed_to?(:make_payment, @project) || User.current.admin? %>
-            <td><%= link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id) %></td>
-          <% else %>
-            <td>Not Allowed</td>
-          <% end %>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+<%= render partial: 'grid' %>
+<fieldset id="filters" class="collapsible collapsed">
+<legend onclick="toggleFieldset(this);">filters</legend>
+<br>
+<div id="filters_div" style="display: none">
+<div id="left">
+<label>Invoice ID : </label><span class="criteria"> <%= grid_filter @tasks_grid, :id_filter %></span><br>
+<label>Invoice Number         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :invoicenumber_filter %></span><br>
+</div>
+  <div id="center">
+<label>Project ID   : </label> <span class="criteria"><%= grid_filter @tasks_grid, :projectid_filter %></span><br>
+<label>Invoice Date    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :invoicedate_filter %></span><br>
+<label>Due Date    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :duedate_filter %></span><br>
+  </div>
+  <div class="clear"></div>
+<br>
+<button class="wg-external-submit-button" data-grid-name="grid">Submit</button>
+<button class="wg-external-reset-button" data-grid-name="grid">Reset</button> 
+<br>
+</div>
+</fieldset>
+<br>
+<%=render_grid(@tasks_grid) %>
+<br>
 <%end%>
+
+<script>
+  $(document).ready(function() {
+        $('#Share_button').on('click', function() {
+        $.fancybox({
+          href : '#mybox'
+        }); 
+    });
+    });
+  var client = new ZeroClipboard( document.getElementById("copy") );
+
+  client.on( "ready", function( readyEvent ) {
+    // alert( "ZeroClipboard SWF is ready!" );
+
+    client.on( "aftercopy", function( event ) {
+      // `this` === `client`
+      // `event.target` === the element that was clicked
+      //event.target.style.display = "none";
+      
+    } );
+  } );
+
+  </script>

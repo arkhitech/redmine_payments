@@ -1,7 +1,20 @@
 require 'redmine'
 Rails.configuration.to_prepare do
+   require_dependency 'project'
+  Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
+  
+  require_dependency 'invoice'
+  Invoice.send(:include, RedminePayments::Decorators::InvoiceDecorator)
+  
   require_dependency 'invoice_payments_controller'
   InvoicePaymentsController.send(:include, RedminePayments::Decorators::InvoicePaymentsDecorator)
+
+  require_dependency 'invoices_controller'
+  InvoicesController.send(:include, RedminePayments::Decorators::InvoicesDecorator)
+
+  require_dependency 'user'
+  User.send(:include, RedminePayments::Decorators::UserDecorator)
+  
   Moneyjs.configure do |config|
     config.only_currencies = ['PKR','USD']
   end    
@@ -25,18 +38,25 @@ Redmine::Plugin.register :redmine_payments do
                           {:controller => 'invoice_payments', :action => 'index'},
                           :caption => "Invoice Payments",
                           :param => :project_id,
-                          :if => Proc.new{User.current.allowed_to?({:controller => 'invoice_payments', :action => 'index'},
-                                          nil, {:global => true}) && Setting.plugin_redmine_payments[:payment_invoices_show_payment_in_app_menu]}
+                          :if => Proc.new{
+                          User.current.allowed_to?({controller: 'invoice_payments', action: 'index'},
+                                          nil, {global: true}) && Setting.plugin_redmine_payments[:payment_invoices_show_payment_in_app_menu]}
 
+  
+  menu :project_menu, :copy_invoices, 
+                          {:controller => 'copy_invoices', :action => 'index'},
+                          :caption => "Copy Invoice", :param => :project_id
   menu :project_menu, :invoice_payments, 
                           {:controller => 'invoice_payments', :action => 'index'},
                           :caption => "Invoice Payments", :param => :project_id
 
   
   project_module :payments do
-    permission :make_payment, payments: [:index, :generate, :finalize, :register]
+    permission :make_payment, {payments: [:index, :generate, :finalize, :register],
+      invoice_payments: [:index, :show],
+    }
     
-    permission :list_and_edit_invoice_payments,  :invoice_payments => [:index, :edit, :show]
+    permission :list_and_edit_invoice_payments,  {invoice_payments: [:index, :edit, :show], copy_invoices: [:index], invoices: [:copy]}
   end
   
   settings default: {'payment_invoice_currency' => 'USD', '

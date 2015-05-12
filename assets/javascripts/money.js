@@ -1,3 +1,4 @@
+
 /*!
  * money.js / fx() v0.1.3
  * Copyright 2011, Joss Crowcroft

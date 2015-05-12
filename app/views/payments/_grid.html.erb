@@ -1,0 +1,60 @@
+<%=define_grid(@tasks_grid, hide_submit_button: true, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
+
+  g.column name:  'ID' ,attribute: 'id',detach_with_id: :id_filter do |invoice|
+  link_to invoice.id, invoice
+  end
+
+  g.column name: 'Number' ,attribute: 'number',detach_with_id: :invoicenumber_filter do |invoice|
+  invoice.number
+  end
+
+  g.column name: 'Invoice Date',attribute: 'invoice_date',detach_with_id: :invoicedate_filter do |invoice|
+  invoice.invoice_date.localtime 
+  end   
+      
+  g.column name: 'Description',attribute: 'description',detach_with_id: :description_filter do |invoice|
+  invoice.description
+  end  
+  
+   g.column name: 'Due Date',attribute: 'due_date',detach_with_id: :duedate_filter do |invoice|
+  format_time(invoice.due_date) 
+  end    
+      
+  g.column name: 'Currency',attribute: 'currency',detach_with_id: :currency_filter do |invoice|
+  invoice.currency 
+  end 
+  
+  g.column name: 'Status',attribute: 'status_id',detach_with_id: :status_filter do |invoice|
+  invoice.status 
+  end 
+
+  g.column name: 'Project ID',attribute: 'project_id',custom_filter: [:project, :to_option],detach_with_id: :projectid_filter  do |invoice|
+  link_to invoice.project.name, invoice.project
+  end    
+
+   g.column name: 'Assigned To',attribute: 'assigned_to_id',detach_with_id: :assigned_to_filter do |invoice|
+  invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to)
+  end 
+
+  g.column name: 'Author',attribute: 'author_id',detach_with_id: :author_filter  do |invoice|
+  link_to invoice.author.name, invoice.author 
+  end 
+
+   g.column name: 'Subject',attribute: 'subject',detach_with_id: :subject_filter do |invoice|
+  invoice.subject
+  end 
+
+  g.column name: 'Amount',attribute: 'amount',detach_with_id: :amount_filter do |invoice|
+  invoice.amount.to_f 
+  end 
+  
+  if User.current.allowed_to?(:make_payment, @project) || User.current.admin?
+   g.column name: 'Action' do |invoice|
+   link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id)
+   end
+  else 
+   g.column name: 'Action' do |invoice|
+   link_to 'Pay',shared_invoice_payments_path(invoice.token || invoice.generate_token)
+   end
+  end   
+end -%>

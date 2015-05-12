@@ -1,6 +1,15 @@
 <legend><strong>Redmine Payment Settings</strong></legend>
+ 
 <table>  
-  <tr>
+    <tr>
+    <td><legend>Email notification</legend></td>
+      <td><%= select_tag('settings[eligible_for_email_notification]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['eligible_for_email_notification']), 
+          multiple: true) %>
+      </td>
+    </tr>
+    <tr>
     <td><legend>Invoice Currency</legend></td>
 <td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
 </tr>

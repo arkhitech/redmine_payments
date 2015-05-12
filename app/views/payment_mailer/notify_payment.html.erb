@@ -1,0 +1,26 @@
+<p>Invoice Payment Detail</p>
+
+<table border="1" style="text-align:center">
+    <thead>
+      <tr>
+        <th> ID</th>
+        <th>Customer</th>
+        <th>Card Number</th>
+        <th>Payment Account</th>
+        <th>Amount</th>
+        <th>Remaining Amount</th>
+        <th>Invoice Number</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><%=@invoice.id %></td>
+          <td><%=@payment.customer_name%></td>
+          <td><%=@payment.payment_card_number%></td>
+          <td><%=@payment.payment_account%></td>
+          <td><%=@invoice.amount%></td>
+          <td><%=@payment.remaining_balance_to_s%></td>
+          <td><%=link_to @invoice.number, invoice_url(@invoice)%></td>
+        </tr>
+    </tbody>
+  </table>

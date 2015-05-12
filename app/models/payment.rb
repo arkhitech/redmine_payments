@@ -1,4 +1,5 @@
 class Payment < ActiveRecord::Base
+  
   attr_accessor :cc_number, :cvv2
   attr_accessor :state
   attr_accessor :return_path
@@ -18,7 +19,6 @@ class Payment < ActiveRecord::Base
   belongs_to :project
   
   #before_create :execute
-  
   validate :validate_credit_card
   validates :cc_number, :expiry_date, :cvv2, presence: true, if: 'state == STATE_AUTHORIZATION'
     
@@ -26,7 +26,8 @@ class Payment < ActiveRecord::Base
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
-    
+  after_save :notify_payment_listner
+
   before_save do
     if self.state == STATE_REGISTRATION
 #      transaction_for_registration
@@ -40,6 +41,17 @@ class Payment < ActiveRecord::Base
     end
   end
   
+   def notify_payment_listner
+    group_ids = Setting.plugin_redmine_payments['eligible_for_email_notification']
+      @eligible_users= User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
+          group_ids).group("#{User.table_name}.id")
+      @eligible_users.sort_by{|e| e[:firstname]}
+      @eligible_users.each do |user|
+       PaymentMailer.notify_payment(user,self).deliver
+     end
+  end
+  private :notify_payment_listner
   def validate_credit_card
     unless state == STATE_AUTHORIZATION
       return
@@ -171,6 +183,8 @@ class Payment < ActiveRecord::Base
       InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"
       )
+      #send email to group
+      
     end
     
     !errors.any?    
@@ -214,5 +228,4 @@ class Payment < ActiveRecord::Base
     
     !errors.any?    
   end
-  
 end

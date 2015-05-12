@@ -1,0 +1,75 @@
+label
+{
+    display: inline-block;
+    font-size: 13px;
+    margin-left: 20px;
+    width: 125px;
+}
+.criteria .wg-detached-filter .custom-dropdown-container
+  { display: inline;}
+ .criteria .wg-detached-filter .date-filter
+  { display: inline;}
+.criteria
+{
+  margin-left: 0px;
+}
+
+.criteria input { width: 200px; height:15px }
+
+ .criteria .date-filter br { display: none;}
+ button{
+   margin-left: 15px;
+   height: 28px;
+   text-justify: auto;
+ }
+ h3{
+   
+   margin-left:5px;
+ }
+ #left
+ {
+   width: 40%;
+   float: left;
+ }
+  #center
+ {
+   width: 40%;
+   float:left;
+   margin-left: 10px;
+ }
+ .clear
+ {
+   clear:both;
+ }
+
+ #filtertoggle {
+      cursor: pointer;
+   }
+
+   #filters_div {
+      position: relative;
+      z-index: 0;
+      top: 1px;
+      padding: 5px;
+   }
+   #fs
+   {
+     background:-moz-linear-gradient(center top , #ffffff, #eeeeef) repeat scroll 0 0 #eeeeef ;
+   }
+   .table-striped
+   {
+         border: 1px solid #E4E4E4;
+         border-collapse: collapse;
+         width: 100%;
+         margin-bottom: 4px;
+   }
+   .table-striped th
+   {
+    background-color: #EEE;
+    padding: 4px;
+    text-align:left;
+   }
+   .wg-show-all-link
+   {
+     display: none;
+   }
