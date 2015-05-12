@@ -26,7 +26,7 @@ class Payment < ActiveRecord::Base
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
-  after_save :notify_the_absentee
+  after_save :notify_payment_listner
 
   before_save do
     if self.state == STATE_REGISTRATION
@@ -41,24 +41,19 @@ class Payment < ActiveRecord::Base
     end
   end
   
-   def notify_the_absentee
+   def notify_payment_listner
     group_ids = Setting.plugin_redmine_leaves['eligible_for_email_notification']
-    if group_ids.blank?
-      @eligible_users=User.active.all
-#     @eligible_users.order('users.name ASC').all.map{ |c| [c.name, c.id] }
-      @eligible_users.sort_by{|e| e[:firstname]}
-    else
       @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
           group_ids).group("#{User.table_name}.id")
       @eligible_users.sort_by{|e| e[:firstname]}
       
-      end
+      
      @eligible_users.each do |user|
-       PaymentMailer.notify_absentee(user).deliver
+       PaymentMailer.notify_payment(user).deliver
      end
   end
-  private :notify_the_absentee
+  private :notify_payment_listner
   def validate_credit_card
     unless state == STATE_AUTHORIZATION
       return

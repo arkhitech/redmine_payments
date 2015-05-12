@@ -16,7 +16,6 @@
         <th>Amount</th>
         <th>Payment Date</th>
         <th>Invoice Number</th>
-        <th>Description</th>
         <th>Author</th>
         <th>Created At</th>
         <th>Updated At</th>
@@ -25,17 +24,16 @@
       </tr>
     </thead>
     <tbody>
-      <%  @invoice_payments.each do |invoice_payment| %>
+      <%  @invoices.each do |invoice| %>
         <tr class="<%=cycle("odd", "even")%>">
-          <td><%=invoice_payment.id %></td>
-          <td><%=invoice_payment.amount%></td>
-          <td><%=format_time(invoice_payment.payment_date.to_datetime.in_time_zone(User.current.time_zone))%></td>
-          <td><%=link_to  invoice_payment.invoice.number,invoice_payment.invoice%></td>
-          <td><%=invoice_payment.description%></td>
-          <td><%=invoice_payment.author && invoice_payment.author.name%></td>
-          <td><%=format_time(invoice_payment.created_at.to_datetime.in_time_zone(User.current.time_zone))%></td>
-          <td><%=format_time(invoice_payment.updated_at.to_datetime.in_time_zone(User.current.time_zone))%></td>
-          <td><%= link_to 'Copy', copy_project_invoice_path(invoice_payment.invoice.project,invoice_payment.invoice.id) %></td>
+          <td><%=invoice.id %></td>
+          <td><%=invoice.amount%></td>
+          <td><%=format_time(invoice.paid_date)%></td>
+          <td><%=invoice.number%></td>
+          <td><%=invoice.author && invoice.author.name%></td>
+          <td><%=format_time(invoice.created_at)%></td>
+          <td><%=format_time(invoice.updated_at)%></td>
+          <td><%= link_to 'Copy', copy_project_invoice_path(invoice.project_id,invoice.id) %></td>
         </tr>
       <%end%>
     </tbody>

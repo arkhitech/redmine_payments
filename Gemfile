@@ -3,7 +3,5 @@ gem 'credit_card_validator'
 gem 'open_exchange_rates'
 gem 'zeroclipboard-rails'
 gem 'moneyjs-rails', git: 'https://github.com/philister/moneyjs-rails.git'
-gem 'byebug'
 group :development do
-gem 'byebug'
 end
