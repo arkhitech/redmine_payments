@@ -28,8 +28,7 @@
         <tr class="<%=cycle("odd", "even")%>">
           <td><%=invoice.id %></td>
           <td><%=invoice.amount%></td>
-          <td><%=format_time(invoice.paid_date)%></td>
-          <td><%=invoice.number%></td>
+          <td><%=link_to invoice.number, invoice%></td>
           <td><%=invoice.author && invoice.author.name%></td>
           <td><%=format_time(invoice.created_at)%></td>
           <td><%=format_time(invoice.updated_at)%></td>

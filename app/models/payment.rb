@@ -42,15 +42,13 @@ class Payment < ActiveRecord::Base
   end
   
    def notify_payment_listner
-    group_ids = Setting.plugin_redmine_leaves['eligible_for_email_notification']
+    group_ids = Setting.plugin_redmine_payments['eligible_for_email_notification']
       @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
           group_ids).group("#{User.table_name}.id")
       @eligible_users.sort_by{|e| e[:firstname]}
-      
-      
-     @eligible_users.each do |user|
-       PaymentMailer.notify_payment(user).deliver
+      @eligible_users.each do |user|
+       PaymentMailer.notify_payment(user,self).deliver
      end
   end
   private :notify_payment_listner
