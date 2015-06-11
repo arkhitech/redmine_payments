@@ -51,7 +51,9 @@ module RedminePayments
 #              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
 #            end
           end
-          @tasks_grid = initialize_grid(@invoice_payments)
+          #byebug
+          
+          @tasks_grid = initialize_grid(@invoice_payments,:order => 'id',:order_direction => 'desc')
         end
                 
         def show

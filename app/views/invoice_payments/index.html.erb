@@ -10,6 +10,9 @@
 
 <h2><%= "Invoice Payments"%></h2>
 <br>
+<%unless @invoice_payments.any?%>
+<strong>No Invoice Payments found.</strong>
+<%else%>
 <fieldset id="filters" class="collapsible collapsed">
 <legend onclick="toggleFieldset(this);">Filters</legend>
 <br>
@@ -34,6 +37,6 @@
 </fieldset>
 <br>
 <%=render_grid(@tasks_grid) %>
-
+<%end%>
 
 
