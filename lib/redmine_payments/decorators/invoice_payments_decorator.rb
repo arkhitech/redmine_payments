@@ -8,7 +8,7 @@ module RedminePayments
           unloadable
           menu_item :invoice_payments
           
-          helper PaymentsHelper
+          include PaymentsHelper
           skip_before_filter :authorize, :only => [:show,:index]
           before_filter :authorize_index_show, :only => [:index, :show]
           #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
