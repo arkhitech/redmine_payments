@@ -1,10 +1,13 @@
+<% sum = 0 %>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
-
-    
+ 
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
   
 
-  g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter
+  g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter do |invoice_payment|
+  sum = sum +invoice_payment.amount
+  invoice_payment.amount
+  end
 
   g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
     invoice_payment.payment_date.to_s(:db)
@@ -27,4 +30,12 @@
   g.column name: 'Updated At',attribute: 'updated_at',detach_with_id: :updatedAt_filter do |invoice_payment|
     invoice_payment.updated_at.to_s(:db)
   end
+  
+  g.last_row do |invoice_payment|
+    #if invoice_payment.active?
+      "<tr><td><b>Total Amount</b></td><td><b>#{sum}</b></td></tr>"  # this would add a row                                                                # before every active task row
+    #else
+      #nil
+    #end
+  end 
 end -%>
