@@ -5,8 +5,8 @@
   
 
   g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter do |invoice_payment|
-  sum = sum +invoice_payment.amount
-  invoice_payment.amount
+    sum = sum +invoice_payment.amount
+    '%.2f' % invoice_payment.amount
   end
 
   g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
@@ -31,11 +31,7 @@
     invoice_payment.updated_at.to_s(:db)
   end
   
-  g.last_row do |invoice_payment|
-    #if invoice_payment.active?
-      "<tr><td><b>Total Amount</b></td><td><b>#{sum}</b></td></tr>"  # this would add a row                                                                # before every active task row
-    #else
-      #nil
-    #end
+  g.last_row do |number_of_columns|
+      "<tr><td><b>Total Amount</b></td><td><b>#{'%.2f' % sum}</b></td></tr>"
   end 
 end -%>
