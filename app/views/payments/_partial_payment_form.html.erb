@@ -17,45 +17,45 @@
       </div>
       <div class="modal-body">
      
-        <textarea id="pay_url" rows="2" cols="58"><%= shared_invoice_payments_url(@token) %></textarea>
+        <textarea id="pay_url" rows="2" cols="58"><%= shared_invoice_payments_url(payment.invoice.token || payment.invoice.generate_token) %></textarea>
         <br>
         <input type="button" id="copy" data-clipboard-target='pay_url' name="copy" value="Copy Link" />
       </div>
       <div class="modal-footer">
-        <%= button_to "Reset URL",generate_invoice_payment_token_project_payments_path(@invoice), remote: true %>
+        <%= button_to "Reset URL",generate_invoice_payment_token_project_payments_path(payment.invoice), remote: true %>
       </div>
     </div>
   </div>
 </div>
 <br>
-<%= error_messages_for @payment%>
-<%= labelled_form_for @payment, url: register_project_payments_path(@payment.project), html: {method: :post} do |f| %>
+<%= error_messages_for payment%>
+<%= labelled_form_for payment, url: register_project_payments_path(payment.project), html: {method: :post} do |f| %>
 
 <div>   
 <table>
     
      <tr align="left" class="<%= cycle("odd")%>" >
      <th><strong>Project Name:</strong></th>
-     <td><%=@project.name %></td>
+     <td><%=payment.project.name %></td>
      </tr>
      <tr align="left" class="<%= cycle("even")%>" >
      <th><strong>Sub Project :</strong></th>
-     <td><%=@payment.invoice.project.name %></td>
+     <td><%=payment.invoice.project.name %></td>
      </tr>
      <tr align="left" class="<%= cycle("odd")%>" >
      <th><strong>Client Name:</strong></th>
-     <td><%=@payment.customer_name %></td>
+     <td><%=payment.customer_name %></td>
      </tr>
      <tr align="left" class="<%= cycle("even")%>" >
      <th><strong>Invoice Number :</strong></th>
-     <td><%=@payment.invoice.number %></td>
+     <td><%=payment.invoice.number %></td>
      </tr>
     </table> 
 </div>
 <div class="box tabular">
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
-    <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= @payment.remaining_balance_to_s%></p> 
+    <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= payment.remaining_balance_to_s%></p> 
     <p><%= f.text_field :payment_amount %></p>
   </div>
   <p class="buttons">

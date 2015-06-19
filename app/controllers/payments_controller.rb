@@ -5,7 +5,8 @@ class PaymentsController < ApplicationController
   #skip_before_filter :authenticate_user, only: [:shared_invoice,:shared_project]
   skip_before_filter :check_if_login_required, only: [:shared_invoice,:shared_project,:generate]
   skip_before_filter :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
-  before_filter :find_project, except: [:shared_invoice,:shared_project,:generate_invoice_payment_token]
+  before_filter :find_project, except: [:shared_invoice, :shared_project, :generate_invoice_payment_token]
+  
   def index
     return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
       User.current.admin?
@@ -41,11 +42,14 @@ class PaymentsController < ApplicationController
       User.current.admin?
     @invoice = Invoice.includes(:contact).where(project_id: @project.self_and_descendants.map(&:id), id: params[:invoice_id]).first
     generate_invoice_payment(@invoice)
+    render 'generate'
   end
+  
   def shared_invoice
     @invoice = Invoice.find_by_token!(params[:token])
     @project = @invoice.project
     generate_invoice_payment(@invoice)    
+    render 'generate'
   end
   
   def generate_project_invoice_token
@@ -56,11 +60,13 @@ class PaymentsController < ApplicationController
     @invoice = find_invoice
     @token =  @invoice.generate_token
   end
+  
   def generate_project_invoice(project)
     @project_token = project.token || project.generate_token
     render ''
   end
   private :generate_project_invoice
+  
   def generate_invoice_payment(invoice)
     @payment = Payment.new(invoice_amount: invoice.remaining_balance, 
       invoice_currency: invoice.currency,
@@ -68,8 +74,6 @@ class PaymentsController < ApplicationController
       invoice: invoice, project_id: invoice.project_id)
     @payment.payment_amount
     @payment.customer_name = invoice.contact.name unless invoice.contact.nil?
-    @token = invoice.token || invoice.generate_token
-    render 'generate'
   end
   private :generate_invoice_payment
   
@@ -93,6 +97,8 @@ class PaymentsController < ApplicationController
   
   def register
     @payment = Payment.new(params[:payment])
+    @payment.customer_name ||= @payment.invoice.contact.name unless @payment.invoice.contact.nil?
+    
     @payment.state = Payment::STATE_REGISTRATION
     if @payment.save
       @payment.return_path = finalize_project_payment_url(@project.id, @payment)
@@ -108,6 +114,7 @@ class PaymentsController < ApplicationController
     @payment = Payment.where(project_id: @project.self_and_descendants.map(&:id), id: params[:id]).first
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
+    
     if @payment.save
       render text: "<table> <h1> Thank you for the payment! </h1> <tr> <th> Payment amount: </th> <td> #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.

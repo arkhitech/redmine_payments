@@ -26,7 +26,6 @@ class Payment < ActiveRecord::Base
 
   validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
-  after_save :notify_payment_listner
 
   before_save do
     if self.state == STATE_REGISTRATION
@@ -41,7 +40,7 @@ class Payment < ActiveRecord::Base
     end
   end
   
-   def notify_payment_listner
+   def notify_payment_completed
     group_ids = Setting.plugin_redmine_payments['eligible_for_email_notification']
       @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
@@ -51,7 +50,8 @@ class Payment < ActiveRecord::Base
        PaymentMailer.notify_payment(user,self).deliver
      end
   end
-  private :notify_payment_listner
+  private :notify_payment_completed
+  
   def validate_credit_card
     unless state == STATE_AUTHORIZATION
       return
@@ -184,7 +184,7 @@ class Payment < ActiveRecord::Base
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"
       )
       #send email to group
-      
+      notify_payment_completed      
     end
     
     !errors.any?    

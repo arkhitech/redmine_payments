@@ -2,7 +2,7 @@
     <%= stylesheet_link_tag 'jquery.fancybox.css', :plugin => 'redmine_payments' %>
 <% end %>
 
-<%=render partial: 'partial_payment_form'%>
+<%=render partial: 'partial_payment_form', locals: {payment: @payment}%>
 
 <%=form_tag @payment.payment_page, id: 'redirect_form', target: 'payment-frame' do%>
   <%=hidden_field_tag 'TransactionID', @payment.transaction_id%>
