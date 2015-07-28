@@ -14,7 +14,7 @@ resources :projects do
       post :generate_invoice_payment_token
     end
     member do
-      match :finalize      
+      match :finalize, :via => [:get, :post]      
     end
     collection do
       get  'shared_invoice/:token' => 'payments#shared_invoice', as: :shared_invoice
@@ -47,6 +47,6 @@ resources :invoice_payments, only: [:show, :index] do
     put '/edit/:id', to: 'invoice_payments#edit'
   end
 end
-match "/finalize", to: "payments#finalize"
+match "/finalize", to: "payments#finalize", :via => [:get, :post]
 
  
