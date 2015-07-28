@@ -98,11 +98,9 @@ class PaymentsController < ApplicationController
   def register
 #    @payment = Payment.new(params[:payment])
     @payment = Payment.new(payments_params)
-    @payment.customer_name ||= @payment.invoice.contact.name unless @payment.invoice.contact.nil?
-      byebug    
+    @payment.customer_name ||= @payment.invoice.contact.name unless @payment.invoice.contact.nil?   
     @payment.state = Payment::STATE_REGISTRATION
     if @payment.save
-      byebug
       @payment.return_path = finalize_project_payment_url(@project.id, @payment)
       @payment.transaction_for_registration
       

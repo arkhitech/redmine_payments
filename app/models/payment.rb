@@ -111,7 +111,6 @@ class Payment < ActiveRecord::Base
   end
   
   def transaction_for_registration
-    byebug
     require 'rjb'
     Rjb::load
     transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction");
