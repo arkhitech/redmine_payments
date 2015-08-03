@@ -4,6 +4,16 @@
   link_to invoice.id, invoice
   end
 
+  if User.current.allowed_to?(:make_payment, @project) || User.current.admin?
+   g.column name: 'Action' do |invoice|
+   link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id)
+   end
+  else 
+   g.column name: 'Action' do |invoice|
+   link_to 'Pay',shared_invoice_payments_path(invoice.token || invoice.generate_token)
+   end
+  end 
+
   g.column name: 'Number' ,attribute: 'number',detach_with_id: :invoicenumber_filter do |invoice|
   invoice.number
   end
@@ -46,15 +56,5 @@
 
   g.column name: 'Amount',attribute: 'amount',detach_with_id: :amount_filter do |invoice|
   invoice.amount.to_f 
-  end 
-  
-  if User.current.allowed_to?(:make_payment, @project) || User.current.admin?
-   g.column name: 'Action' do |invoice|
-   link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id)
-   end
-  else 
-   g.column name: 'Action' do |invoice|
-   link_to 'Pay',shared_invoice_payments_path(invoice.token || invoice.generate_token)
-   end
   end   
 end -%>
