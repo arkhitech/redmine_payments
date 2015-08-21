@@ -20,11 +20,11 @@ class Payment < ActiveRecord::Base
   
   #before_create :execute
   validate :validate_credit_card
-  validates :cc_number, :expiry_date, :cvv2, presence: true, if: 'state == STATE_AUTHORIZATION'
+  validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == 'STATE_AUTHORIZATION'"
     
   validates :payment_amount, :payment_currency, :project_id, presence: true
 
-  validates :transaction_id, presence: true, if: 'state == STATE_FINALIZATION'
+  validates :transaction_id, presence: true, if: "state == 'STATE_FINALIZATION'"
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
 
   before_save do
@@ -87,8 +87,10 @@ class Payment < ActiveRecord::Base
   end
   
   def payment_amount
+#    read_attribute(:payment_amount) || write_attribute(:payment_amount, 
+#      '%.2f'%fx.convert(invoice_amount||0, from: invoice_currency, to: payment_currency))
     read_attribute(:payment_amount) || write_attribute(:payment_amount, 
-      '%.2f'%fx.convert(invoice_amount||0, from: invoice_currency, to: payment_currency))
+      '%.2f'%fx.convert(invoice_amount.to_f||0, from: invoice_currency, to: payment_currency))
   end
   
   def order_info
