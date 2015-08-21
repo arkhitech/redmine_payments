@@ -1,43 +1,42 @@
-<h2><%= "Invoice Payments"%></h2>
+<h2><%= "Copy Invoices"%></h2>
+<% content_for :header_tags do %>
+<%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
+<%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'application', :plugin => 'redmine_wice_grid' %>
+<%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
+<% end %>
 <div>   
-<table>
-    
-     <tr align="left" class="<%= cycle("odd")%>" >
-     <th><strong>Project:</strong></th>
-     <td><%=Project.find(params[:project_id]).name %></td>
-     </tr>
-    </table> 
+<strong>Project:</strong><%=Project.find(params[:project_id]).name %>
 </div>
-<div class="autoscroll">
-  <table border="1" style="text-align:center" class="list invoice payments">
-    <thead>
-      <tr>
-        <th> ID</th>
-        <th>Amount</th>
-        <th>Payment Date</th>
-        <th>Invoice Number</th>
-        <th>Author</th>
-        <th>Created At</th>
-        <th>Updated At</th>
-        <th>Copy</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      <%  @invoices.each do |invoice| %>
-        <tr class="<%=cycle("odd", "even")%>">
-          <td><%=invoice.id %></td>
-          <td><%=invoice.amount%></td>
-          <td><%=link_to invoice.number, invoice%></td>
-          <td><%=invoice.author && invoice.author.name%></td>
-          <td><%=format_time(invoice.created_at)%></td>
-          <td><%=format_time(invoice.updated_at)%></td>
-          <td><%= link_to 'Copy', copy_project_invoice_path(invoice.project_id,invoice.id) %></td>
-        </tr>
-      <%end%>
-    </tbody>
-  </table>
+<br>
+<br>
+<%unless @invoices.any?%>
+<strong>No Invoices found.</strong>
+<%else%>
+<%= render partial: 'grid' %>
+<fieldset id="filters" class="collapsible collapsed">
+<legend onclick="toggleFieldset(this);">Filters</legend>
+<br>
+<div id="filters_div" style="display: none">
+<div id="left">
+<label>Invoice Number : </label><span class="criteria"> <%= grid_filter @tasks_grid, :invoicenumber_filter %></span><br>
+<label>Amount         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :amount_filter %></span><br>
 </div>
+  <div id="center">
+<label>Author Name    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :author_filter %></span><br>
+<label>Created at     :</label><span class="criteria"> <%= grid_filter @tasks_grid, :createdAt_filter %></span><br>
+<label>Updated At     : </label> <span class="criteria"><%= grid_filter @tasks_grid, :updatedAt_filter %></span>
+  </div>
+  <div class="clear"></div>
+<br>
+<button class="wg-external-submit-button" data-grid-name="grid">Submit</button>
+<button class="wg-external-reset-button" data-grid-name="grid">Reset</button> 
+<br>
+</div>
+</fieldset>
+<br>
+<%=render_grid(@tasks_grid) %>
+<%end%>
 
    
 
