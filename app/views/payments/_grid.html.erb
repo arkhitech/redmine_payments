@@ -17,6 +17,10 @@
   g.column name: 'Number' ,attribute: 'number',detach_with_id: :invoicenumber_filter do |invoice|
   invoice.number
   end
+  
+  g.column name: 'Client', attribute: 'contact_id' , custom_filter: [:contact,:to_option] , detach_with_id: :client_filter do |invoice|
+    invoice.contact
+  end
 
   g.column name: 'Invoice Date',attribute: 'invoice_date',detach_with_id: :invoicedate_filter do |invoice|
   invoice.invoice_date.localtime 

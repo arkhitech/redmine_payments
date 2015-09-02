@@ -15,6 +15,9 @@ Rails.configuration.to_prepare do
   require_dependency 'user'
   User.send(:include, RedminePayments::Decorators::UserDecorator)
   
+  require_dependency 'contact'
+  Contact.send(:include, RedminePayments::Decorators::ContactDecorator)
+  
   Moneyjs.configure do |config|
     config.only_currencies = ['PKR','USD']
   end    

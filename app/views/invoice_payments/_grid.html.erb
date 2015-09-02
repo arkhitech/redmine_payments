@@ -1,4 +1,5 @@
 <% sum = 0 %>
+
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
  
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
@@ -19,10 +20,15 @@
 
   g.column name: 'Description', attribute: 'description',detach_with_id: :Description_filter
  
-  g.column name: 'Author', attribute: 'author_id' ,custom_filter: [:author, :to_option],detach_with_id: :author_filter do |invoice_payment|
+     
+  g.column name: 'Author', attribute: 'author_id' , custom_filter: [:author, :to_option] ,detach_with_id: :author_filter do |invoice_payment|
     invoice_payment.author && link_to_user(invoice_payment.author)
   end
-    
+  
+    g.column name: 'Client', attribute: 'contact_id' , :model => 'Invoice' , custom_filter: [:invoice , :to_option] , detach_with_id: :client_filter do |invoice_payment|
+    invoice_payment.invoice.contact
+   end
+
   g.column name: 'Created At',attribute: 'created_at',detach_with_id: :createdAt_filter do |invoice_payment|
     invoice_payment.created_at.to_s(:db)
   end

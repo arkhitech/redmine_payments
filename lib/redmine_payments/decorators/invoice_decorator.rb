@@ -15,7 +15,12 @@ module RedminePayments
           end while self.class.exists?(token: token)
           self.save!
           self.token
-        end        
+        end 
+        def to_option
+          if self.contact_id.present?
+          self.contact.to_option
+          end
+        end
       end
     end
   end

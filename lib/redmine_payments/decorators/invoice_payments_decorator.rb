@@ -53,7 +53,7 @@ module RedminePayments
           end
           #byebug
           
-          @tasks_grid = initialize_grid(@invoice_payments,:order => 'id',:order_direction => 'desc')
+          @tasks_grid = initialize_grid(@invoice_payments, include: :invoice,:order => 'id',:order_direction => 'desc')
         end
                 
         def show
