@@ -26,6 +26,14 @@ label
    
    margin-left:5px;
  }
+ h2{
+   display: inline-block ;
+   width : 50% ;
+ }
+ #export-button
+ {
+   float : right;
+ }
  #left
  {
    width: 40%;
@@ -73,3 +81,8 @@ label
    {
      display: none;
    }
+   .wice-grid .export-to-csv-button.clickable {
+    background: transparent url("/plugin_assets/redmine_payments/images/icons/grid/page_white_excel.png") no-repeat scroll 0% 0%;
+    width: 16px;
+    height: 16px;
+    }

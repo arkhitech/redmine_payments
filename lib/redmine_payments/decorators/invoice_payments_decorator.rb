@@ -53,9 +53,16 @@ module RedminePayments
           end
           #byebug
           
-          @tasks_grid = initialize_grid(@invoice_payments, include: :invoice,:order => 'id',:order_direction => 'desc')
+          @tasks_grid = initialize_grid(@invoice_payments, 
+            :include => :invoice,:order => 'id',
+            :name => 'grid',
+            :order_direction => 'desc',
+            :enable_export_to_csv => true,
+            :csv_field_separator => ';',
+            :csv_file_name => 'InvoicePayments')
+          
+          export_grid_if_requested('grid' => 'grid')
         end
-                
         def show
           if params[:id]
             @invoice_payments = InvoicePayment.where("id=?",params[:id])
