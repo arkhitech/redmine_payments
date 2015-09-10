@@ -54,7 +54,7 @@ module RedminePayments
           #byebug
           
           @tasks_grid = initialize_grid(@invoice_payments, 
-            :include => :invoice,:order => 'id',
+            :order => 'id',
             :name => 'grid',
             :order_direction => 'desc',
             :enable_export_to_csv => true,
