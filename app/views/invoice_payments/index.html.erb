@@ -12,7 +12,7 @@
 <%unless @invoice_payments.any?%>
 <br>
 <br>
-<strong style="margin-left: 15px;">No Invoice Payments found.</strong>
+<strong>No Invoice Payments found.</strong>
 <%else%>
 <button id="export-button" class="wg-external-csv-export-button" data-grid-name="grid"><%=image_tag("/plugin_assets/redmine_payments/images/icons/grid/page_white_excel.png", :alt => "home image",:title => "Export to CSV")%> Export to CSV</button>
 <br>
