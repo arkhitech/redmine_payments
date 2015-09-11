@@ -19,7 +19,8 @@
      
         <textarea id="pay_url" rows="2" cols="58"><%= shared_invoice_payments_url(payment.invoice.token || payment.invoice.generate_token) %></textarea>
         <br>
-        <input type="button" id="copy" data-clipboard-target='pay_url' name="copy" value="Copy Link" />
+        <button type="button" id="copy" data-clipboard-target='pay_url' name="copy" value="Copy Link">Copy Link</button>
+        <span id="copy-result"></span>
       </div>
       <div class="modal-footer">
         <%= button_to "Reset URL",generate_invoice_payment_token_project_payments_path(payment.invoice), remote: true %>
@@ -93,7 +94,7 @@
       // `this` === `client`
       // `event.target` === the element that was clicked
       //event.target.style.display = "none";
-      
+      $('#copy-result').text('Copied to Clipboard')
     } );
   } );
   </script>

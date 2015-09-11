@@ -9,14 +9,17 @@ module RedminePayments
           menu_item :invoice_payments
           
           include PaymentsHelper
-          skip_before_filter :authorize, :only => [:show,:index]
-          before_filter :authorize_index_show, :only => [:index, :show]
+          skip_before_filter :authorize, :only => [:show, :index, :new, :create]
+          before_filter :authorize_index_show, :only => [:index, :show, :new, :create]
+          before_filter :find_invoice_payment_invoice, :only => [:create , :new]
           #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
           #    accept_api_auth :index, :show, :create, :update, :destroy ,:view ,:edit
           # before_filter :find_invoice_payment, :except => [ :edit, :index, :show, :create]
+          
+          alias_method_chain :create, :fee
         end
       end
-
+      
       module InstanceMethods
         def authorize_index_show
           find_optional_project
@@ -28,7 +31,7 @@ module RedminePayments
           if params[:project_id]
             if !(User.current.admin? || 
                   User.current.allowed_to?(:list_and_edit_invoice_payments , @project)
-                  User.current.allowed_to?(:make_payment , @project)
+                User.current.allowed_to?(:make_payment , @project)
               )
               deny_access
               return
@@ -47,9 +50,9 @@ module RedminePayments
             @invoice_payments = InvoicePayment.includes(invoice: :project).
               where("#{Invoice.table_name}.project_id" => allowed_project_ids)
             
-#            @invoice_payments = invoice_payments.delete_if do |ip| 
-#              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
-#            end
+            #            @invoice_payments = invoice_payments.delete_if do |ip| 
+            #              !(User.current.admin? || User.current.allowed_to?(:list_and_edit_invoice_payments , ip.project))
+            #            end
           end
           #byebug
           
@@ -63,27 +66,66 @@ module RedminePayments
           
           export_grid_if_requested('grid' => 'grid')
         end
+        
+        def new
+          @invoice_payment = InvoicePayment.new(:amount => @invoice.remaining_balance, :payment_date => Date.today)
+        end
+        
+        def create_with_fee
+          
+          @invoice_payment = InvoicePayment.new(params[:invoice_payment])
+          # @invoice.contacts = [Contact.find(params[:contacts])]
+          @invoice_payment.invoice = @invoice
+          @invoice_payment.author = User.current
+          if @invoice_payment.save
+            attachments = Attachment.attach_files(@invoice_payment, (params[:attachments] || (params[:invoice_payment] && params[:invoice_payment][:uploads])))
+            render_attachment_warning_if_needed(@invoice_payment)
+            @fee = @invoice_payment.build_payment_transaction_fee(params[:payment_transaction_fee])                
+            @fee.save!
+            flash[:notice] = l(:notice_successful_create)
+            
+            respond_to do |format|
+              format.html { redirect_to invoice_path(@invoice) }
+              format.api  { render :action => 'show', :status => :created, :location => invoice_payment_url(@invoice_payment) }
+            end
+          else
+            respond_to do |format|
+              format.html { render :action => 'new' }
+              format.api  { render_validation_errors(@invoice_payment) }
+            end
+          end
+        end
+        
         def show
           if params[:id]
             @invoice_payments = InvoicePayment.where("id=?",params[:id])
             params[:description]=@invoice_payments.first.description
           end
         end
-        def edit
-          
         
+        def edit
           @invoice_payments = InvoicePayment.where("id=?",params[:id])
           s=params[:invoice_payment] 
           @invoice_payments.first.description=s[:description]
           @invoice_payments.first.save!
           attachments = Attachment.attach_files(@invoice_payments.first, (params[:attachments]     ))
           render_attachment_warning_if_needed(@invoice_payments.first)
-
+          
           flash.now[:success]="Record Updated"
           redirect_to action: :index
-
+          
         end
-       
+        private
+        
+        def find_invoice_payment_invoice
+          invoice_id = params[:invoice_id] || (params[:invoice_payment] && params[:invoice_payment][:invoice_id])
+          @invoice = Invoice.find(invoice_id)
+          @project = @invoice.project
+          project_id = params[:project_id] || (params[:invoice_payment] && params[:invoice_payment][:project_id])
+        rescue ActiveRecord::RecordNotFound
+          render_404
+        end
+        
       end
     end
   end

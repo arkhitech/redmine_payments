@@ -9,3 +9,6 @@ en:
   field_invoice_amount: 'Invoice Amount (USD)'
   field_payment_amount: 'Payment Amount (PKR)'
   make_payment: 'Pay'
+  fee_description: 'Fee Description'
+  fee_percentage: 'Fee Percentage'
+  fee_amount: 'Fee Amount'

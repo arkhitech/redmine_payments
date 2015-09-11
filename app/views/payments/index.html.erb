@@ -22,7 +22,8 @@
      
         <textarea id="payment_url" rows="2" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
         <br>
-        <input type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link" />
+        <button type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link">Copy Link</button>
+        <span id="copy-result"></span>
       </div>
       <div class="modal-footer">
         <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
@@ -77,7 +78,7 @@
         }); 
     });
     });
-  var client = new ZeroClipboard( document.getElementById("copy") );
+  var client = new ZeroClipboard($('#copy'));
 
   client.on( "ready", function( readyEvent ) {
     // alert( "ZeroClipboard SWF is ready!" );
@@ -86,7 +87,7 @@
       // `this` === `client`
       // `event.target` === the element that was clicked
       //event.target.style.display = "none";
-      
+      $('#copy-result').text('Copied to Clipboard')
     } );
   } );
 

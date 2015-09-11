@@ -9,7 +9,15 @@
     sum = sum +invoice_payment.amount
     '%.2f' % invoice_payment.amount
   end
-
+  
+  g.column name: 'Fee' do |invoice_payment|
+   invoice_payment.transaction_fee
+  end
+  
+  g.column name: 'Net Payment' do |invoice_payment|
+  invoice_payment.net_payment
+  end
+      
   g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
     invoice_payment.payment_date.to_s(:db)
   end
