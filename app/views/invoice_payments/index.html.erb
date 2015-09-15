@@ -1,4 +1,3 @@
-
 <% content_for :header_tags do %>
 <%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
 <%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
@@ -8,11 +7,16 @@
 
 <%= render partial: 'grid' %>
 
-<h2><%= "Invoice Payments"%></h2>
-<br>
+<h2><%= l(:invoice_payments) %></h2>
+
 <%unless @invoice_payments.any?%>
+<br>
+<br>
 <strong>No Invoice Payments found.</strong>
 <%else%>
+<button id="export-button" class="wg-external-csv-export-button" data-grid-name="grid"><%=image_tag("/plugin_assets/redmine_payments/images/icons/grid/page_white_excel.png", :alt => "home image",:title => "Export to CSV")%> Export to CSV</button>
+<br>
+<br>
 <fieldset id="filters" class="collapsible collapsed">
 <legend onclick="toggleFieldset(this);">Filters</legend>
 <br>
@@ -21,6 +25,7 @@
 <label>Invoice Number : </label><span class="criteria"> <%= grid_filter @tasks_grid, :invoicenumber_filter %></span><br>
 <label>Amount         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :amount_filter %></span><br>
 <label>Author Name    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :author_filter %></span><br>
+<label>Client Name    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :client_filter %></span><br>
 </div>
   <div id="center">
 <label>Description    : </label> <span class="criteria"><%= grid_filter @tasks_grid, :Description_filter %></span><br>

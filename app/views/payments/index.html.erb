@@ -1,16 +1,15 @@
-<%= javascript_include_tag 'ZeroClipboard.min.js', :plugin => 'redmine_payments' %>
-<%= stylesheet_link_tag 'jquery.fancybox.css',:plugin => 'redmine_payments' %>
-<%= stylesheet_link_tag 'grid.css',:plugin => 'redmine_payments' %>
+<% content_for :header_tags do %>
 <%= stylesheet_link_tag 'shareable_link_fancybox.css',:plugin => 'redmine_payments' %>
-<%= javascript_include_tag 'jquery.fancybox.pack.js',:plugin => 'redmine_payments' %>
+<%= stylesheet_link_tag 'jquery.fancybox.css',:plugin => 'redmine_payments' %>
 <%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
+<%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'ZeroClipboard.min.js', :plugin => 'redmine_payments' %>
+<%= javascript_include_tag 'jquery.fancybox.pack.js',:plugin => 'redmine_payments' %>
 <%= javascript_include_tag 'application', :plugin => 'redmine_wice_grid' %>
 <%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
-<div id="heading">
-  <h2 id="leftt_title">Pending Invoices</h2>
-   <input type="button" id="Share_button" value="Share"> 
-</div>
-<br>
+<%end%>
+  <h2><%= l(:pending_invoices) %></h2>
+
 <!-- Modal -->
 <div style="display:none;" class="modal fade">
   <div class="modal-dialog" id="mybox">
@@ -23,7 +22,8 @@
      
         <textarea id="payment_url" rows="2" cols="58"> <%= shared_project_payments_url(@project_token) %></textarea>
         <br>
-        <input type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link" />
+        <button type="button" id="copy" data-clipboard-target='payment_url' name="copy" value="Copy Link">Copy Link</button>
+        <span id="copy-result"></span>
       </div>
       <div class="modal-footer">
         <%= button_to "Reset URL", generate_project_invoice_token_project_payments_path(@project), remote: true %>
@@ -33,11 +33,17 @@
 </div>
 
 <%unless @invoices.any?%>
+<br>
+<br>
 <strong>Yay! No pending invoice found.</strong>
 
     
 <%else%>
 <%= render partial: 'grid' %>
+<button id="export-button" class="wg-external-csv-export-button" data-grid-name="grid"><%=image_tag("/plugin_assets/redmine_payments/images/icons/grid/page_white_excel.png", :alt => "home image",:title => "Export to CSV")%> Export to CSV</button>
+<input type="button" id="Share_button" value="Share"> 
+<br>
+<br>
 <fieldset id="filters" class="collapsible collapsed">
 <legend onclick="toggleFieldset(this);">Filters</legend>
 <br>
@@ -45,6 +51,7 @@
 <div id="left">
 <label>Invoice ID : </label><span class="criteria"> <%= grid_filter @tasks_grid, :id_filter %></span><br>
 <label>Invoice Number         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :invoicenumber_filter %></span><br>
+<label>Client Name         : </label> <span class="criteria"><%= grid_filter @tasks_grid, :client_filter %></span><br>
 </div>
   <div id="center">
 <label>Project ID   : </label> <span class="criteria"><%= grid_filter @tasks_grid, :projectid_filter %></span><br>
@@ -71,7 +78,7 @@
         }); 
     });
     });
-  var client = new ZeroClipboard( document.getElementById("copy") );
+  var client = new ZeroClipboard($('#copy'));
 
   client.on( "ready", function( readyEvent ) {
     // alert( "ZeroClipboard SWF is ready!" );
@@ -80,7 +87,7 @@
       // `this` === `client`
       // `event.target` === the element that was clicked
       //event.target.style.display = "none";
-      
+      $('#copy-result').text('Copied to Clipboard')
     } );
   } );
 

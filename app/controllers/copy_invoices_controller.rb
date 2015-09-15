@@ -13,10 +13,9 @@ class CopyInvoicesController < ApplicationController
         return
       end
       
-      project = Project.find_by_identifier(params[:project_id])
-      
-      @invoices = project.invoices
-      
+      @project = Project.find_by_identifier(params[:project_id])
+      @invoices = Invoice.where(:project_id =>@project.id)
+      @tasks_grid = initialize_grid(@invoices)
   end
   end
 end           
