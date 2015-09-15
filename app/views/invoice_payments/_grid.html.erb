@@ -17,6 +17,10 @@
   g.column name: 'Net Payment' do |invoice_payment|
   invoice_payment.net_payment
   end
+  
+  g.column name: 'Fee Description' do |invoice_payment|
+  invoice_payment.fee_description
+  end    
       
   g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
     invoice_payment.payment_date.to_s(:db)

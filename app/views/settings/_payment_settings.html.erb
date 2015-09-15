@@ -1,8 +1,8 @@
-<legend><strong>Redmine Payment Settings</strong></legend>
+<legend><strong><%= l(:redmine_payment_settings) %></strong></legend>
  
 <table>  
     <tr>
-    <td><legend>Email notification</legend></td>
+    <td><legend><%= l(:email_notification) %></legend></td>
       <td><%= select_tag('settings[eligible_for_email_notification]', 
           options_from_collection_for_select(Group.all, :id, :name, 
             settings['eligible_for_email_notification']), 
@@ -10,33 +10,33 @@
       </td>
     </tr>
     <tr>
-    <td><legend>Invoice Currency</legend></td>
+    <td><legend><%= l(:invoice_currency) %></legend></td>
 <td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
 <td></td>
-<td><legend>Credit Card Fixed Fee</legend></td>
+<td><legend><%= l(:credit_card_fixed_fee) %></legend></td>
 <td><%= text_field_tag('settings[card_fixed_fee]', settings['card_fixed_fee']) %></td>
 </tr>
 <tr>
-  <td><legend>Payment Currency</legend></td>
+  <td><legend><%= l(:payment_currency) %></legend></td>
 <td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
 <td></td>
-<td><legend>Credit Card Fee Percentage</legend></td>
+<td><legend><%= l(:credit_card_fee_percentage) %></legend></td>
 <td><%= text_field_tag('settings[card_fee_percentage]', settings['card_fee_percentage']) %></td>
 </tr>
 <tr>
-  <td><legend>OpenExchangeRate App ID</legend></td>
+  <td><legend><%= l(:OpenExchangeRate_App_ID) %></legend></td>
 <td><%= text_field_tag('settings[open_exchange_rate_app_id]', settings['open_exchange_rate_app_id']) %></td>
 </tr>
 
 <tr>
-  <td><legend>Show in top menu</legend></td>
+  <td><legend><%= l(:show_top_menu) %></legend></td>
 <td> <%= check_box_tag 'settings[payment_invoices_show_payment_invoices_in_top_menu]', 1, @settings["payment_invoices_show_payment_invoices_in_top_menu"] %>
   <%= "Payment Invoices" %>
 </td>
 </tr>
 
 <tr>
-  <td><legend>Show in app menu</legend></td>
+  <td><legend><%= l(:show_app_menu) %></legend></td>
 <td>
   <%= check_box_tag 'settings[payment_invoices_show_payment_in_app_menu]', 1, @settings["payment_invoices_show_payment_in_app_menu"] %>
   <%= "Payment Invoices" %>
@@ -44,10 +44,10 @@
 </tr>
 
 <tr>
-  <td><legend>Show in project menu</legend></td>
+  <td><legend><%= l(:show_project_menu) %></legend></td>
 <td>
   <%= check_box_tag 'settings[payment_invoices_show_payment_in_project_menu]', 1, @settings["payment_invoices_show_payment_in_project_menu"] %>
-  <%= "Payment Invoices" %>
+  <%= l(:payment_invoices)%>
 </td>
 </tr>
 

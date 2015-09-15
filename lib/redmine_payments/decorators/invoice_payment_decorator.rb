@@ -26,6 +26,14 @@ module RedminePayments
           end
           fee_amount
         end  
+         def fee_description
+          if self.payment_transaction_fee.present?
+            fee_desc = self.payment_transaction_fee.description
+          else
+            fee_desc = nil
+          end
+          fee_desc
+        end 
       end
     end
   end

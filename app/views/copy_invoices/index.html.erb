@@ -1,4 +1,4 @@
-<h2><%= "Copy Invoices"%></h2>
+<h2><%= l(:copy_invoices) %></h2>
 <% content_for :header_tags do %>
 <%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
 <%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
@@ -6,7 +6,7 @@
 <%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
 <% end %>
 <div>   
-<strong>Project:</strong><%=Project.find(params[:project_id]).name %>
+<strong>Project:</strong><%=@project.name %>
 </div>
 <br>
 <br>
