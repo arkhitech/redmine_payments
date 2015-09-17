@@ -25,7 +25,7 @@ class Payment < ActiveRecord::Base
 
   validates :transaction_id, presence: true, if: "state == 'STATE_FINALIZATION'"
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
-
+  accepts_nested_attributes_for :payment_transaction_fee, reject_if: lambda {|fee| fee[:fee_amount].blank? && fee[:fee_percentage].blank?}
   before_save do
     if self.state == STATE_REGISTRATION
 #      transaction_for_registration
@@ -223,38 +223,35 @@ class Payment < ActiveRecord::Base
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
     else
-      @invoice_payment = InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
+      invoice_payment = InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"
       )
-      self.record_transaction_fee(@invoice_payment)
+      self.record_transaction_fee(invoice_payment)
     end
     
     !errors.any?    
   end
   def record_transaction_fee invoice_payment
-   if Setting.plugin_redmine_payments['card_fixed_fee'].present? || Setting.plugin_redmine_payments['card_fee_percentage'].present?
-        total_amount = invoice_payment.amount.to_f
-        fee_percentage_applicable_amount = total_amount
-        fixed_fee = 0.00
-        fee = 0.00
-        fee_percentage = 0.00
-        if Setting.plugin_redmine_payments['card_fixed_fee'].present?
-          fixed_fee = Setting.plugin_redmine_payments['card_fixed_fee'].to_f
-          fee_percentage_applicable_amount = fee_percentage_applicable_amount - fixed_fee
-        end
-        if Setting.plugin_redmine_payments['card_fee_percentage'].present?
-          fee_percentage = Setting.plugin_redmine_payments['card_fee_percentage'].to_f
-          fee_percentage = ('%.2f' % fee_percentage).to_f
-          fee = (fee_percentage/fee_percentage_applicable_amount)*100 
-         fee = ('%.2f' % fee).to_f
-        end
-        total_fee = fixed_fee + fee
-        total_fee = ('%.2f' % total_fee).to_f
-        @transaction_fee = invoice_payment.build_payment_transaction_fee
-        @transaction_fee.fee_amount = total_fee
-        @transaction_fee.fee_percentage = fee_percentage
-        @transaction_fee.description = "Transaction has been done via card. #{fee_percentage}% fee deducted along with #{fixed_fee} fixed fee. Total fee #{total_fee}"
-        @transaction_fee.save!
-      end
+    fixed_fee = Setting.plugin_redmine_payments['card_fixed_fee'].to_f
+    fee = 0.00
+    fee_percentage = 0.00
+    if Setting.plugin_redmine_payments['card_fee_percentage'].present?
+      fee_percentage = Setting.plugin_redmine_payments['card_fee_percentage'].to_f
+      fee_percentage = ('%.2f' % fee_percentage).to_f
+      
+      total_amount = invoice_payment.amount.to_f
+      fee_percentage_applicable_amount = total_amount
+      fee = (fee_percentage/fee_percentage_applicable_amount)*100 
+      fee = ('%.2f' % fee).to_f
+    end
+    total_fee = fixed_fee + fee
+    total_fee = ('%.2f' % total_fee).to_f
+    if total_fee > 0
+      transaction_fee = invoice_payment.build_payment_transaction_fee
+      transaction_fee.fee_amount = total_fee
+      transaction_fee.fee_percentage = fee_percentage
+      transaction_fee.description = "Transaction via credit card: Fee percentage: #{fee_percentage}% Fixed fee: #{fixed_fee}. Total fee: #{total_fee}"
+      transaction_fee.save!
+    end
   end
 end
