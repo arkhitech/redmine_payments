@@ -5,19 +5,17 @@
 <p><%= f.text_field :amount, :label => l(:field_invoice_amount), :size => 10, :required => true %></p>
 <p><%= f.text_field :payment_date, :label => l(:label_invoice_payment_date), :size => 12, :required => true %><%= calendar_for('invoice_payment_payment_date') %> </p>
 <p><%= f.text_field :description, :style => "width: 98%;" %></p>
-<%= fields_for @invoice_payment.build_payment_transaction_fee do |fee| %>
+<%@invoice_payment.build_payment_transaction_fee%>
+<%=f.fields_for :payment_transaction_fee do |fee| %>
 <p>
-  <label for="payment_transaction_fee_fee_amount">Fee Amount</label>
-  <%= fee.text_field :fee_amount, :label => l(:fee_amount), :size => 10, :required => true %>
+  <%= fee.text_field :fee_amount, id: 'transaction_fee_amount', :label => l(:fee_amount), :size => 10, :required => true %>
   <span id="fee_amount_percentage"></span>
 </p>
 <p>
-  <label for="payment_transaction_fee_fee_percentage">Fee Percentage</label>
-  <%= fee.text_field :fee_percentage, :label => l(:fee_amount), :size => 10, :required => true , :hint => "Only Floats are acceptable"  %>
+  <%= fee.text_field :fee_percentage, id: 'transaction_fee_percentage', :label => l(:fee_percentage), :size => 10, :required => true , :hint => "Only Floats are acceptable"  %>
   <span id="fee_percentage_amount"></span>
 </p>
-<p><label for="payment_transaction_fee_description">Fee Description</label>
-<%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
+<p><%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
 <p><label for="payment_net_Amount">Net Payment</label>
   <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" ></input></p>
 <% end %>
@@ -39,8 +37,8 @@
 <br>
 
 <script>
-  $( "#payment_transaction_fee_fee_amount" ).change(function () {
-    var inputtxt = $("#payment_transaction_fee_fee_amount");  
+  $( "#transaction_fee_amount" ).change(function () {
+    var inputtxt = $("#transaction_fee_amount");  
     if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {   
       var netAmount = $("#payment_net_Amount");
       var invoiceAmount = $("#invoice_payment_amount"); 
@@ -51,7 +49,7 @@
       feeAmountPercentageView.text(feeAmountPercentage+'%');
       
       
-      var feePercentageAmount = $("#payment_transaction_fee_fee_percentage").val()/100*invoiceAmount.val();
+      var feePercentageAmount = $("#transaction_fee_percentage").val()/100*invoiceAmount.val();
       var totalFee = feePercentageAmount*1.0 + feeAmount*1.0;
       
       netAmount.val((invoiceAmount.val()*1.0 - totalFee).toFixed(2));
@@ -61,8 +59,8 @@
       inputtxt.val('');
     }     
   });
-  $( "#payment_transaction_fee_fee_percentage" ).change(function () {
-    var inputtxt = $("#payment_transaction_fee_fee_percentage");  
+  $( "#transaction_fee_percentage" ).change(function () {
+    var inputtxt = $("#transaction_fee_percentage");  
     if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {   
       var feePercentageAmountView = $("#fee_percentage_amount");
       var invoiceAmount = $("#invoice_payment_amount"); 
@@ -72,10 +70,10 @@
       var feePercentageAmount = (feePercentage/100*invoiceAmount.val()).toFixed(2);
       feePercentageAmountView.text(feePercentageAmount);
       
-      var feeAmount = $( "#payment_transaction_fee_fee_amount").val()*1.0;
+      var feeAmount = $( "#transaction_fee_amount").val()*1.0;
       var totalFee = feePercentageAmount*1.0 + feeAmount*1.0;
       
-      netAmount.val(invoiceAmount.val()*1.0 - totalFee);
+      netAmount.val((invoiceAmount.val()*1.0 - totalFee).toFixed(2));
       
       inputtxt.val(feePercentage);
     } else {
@@ -85,9 +83,9 @@
   $( "#payment_net_Amount" ).change(function () {
     var inputtxt = $("#payment_net_Amount");  
     if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {   
-      var feeAmount = $("#payment_transaction_fee_fee_amount");
+      var feeAmount = $("#transaction_fee_amount");
       var invoiceAmount = $("#invoice_payment_amount"); 
-      var feePercentage = $("#payment_transaction_fee_fee_percentage"); 
+      var feePercentage = $("#transaction_fee_percentage"); 
       
       var netAmount = (inputtxt.val()*1.0).toFixed(2);
       var totalFee = (invoiceAmount.val()*1.0 - netAmount*1.0).toFixed(2);

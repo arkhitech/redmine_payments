@@ -6,6 +6,7 @@ module RedminePayments
         
         base.class_eval do
           has_one :payment_transaction_fee , :dependent => :destroy
+          accepts_nested_attributes_for :payment_transaction_fee, reject_if: lambda {|fee| fee[:fee_amount].blank? && fee[:fee_percentage].blank?}
         end
       end
 
@@ -22,8 +23,9 @@ module RedminePayments
         end
         def transaction_fee
           if self.payment_transaction_fee.present?
-            fee_amount = (self.amount.to_f*self.payment_transaction_fee.fee_percentage.to_f/100) -
-              self.payment_transaction_fee.fee_amount.to_f
+            fee_amount = (BigDecimal(self.amount) * BigDecimal('%.2f'%self.payment_transaction_fee.fee_percentage) / 100) - 
+              BigDecimal(self.payment_transaction_fee.fee_amount)
+            fee_amount = BigDecimal('%.2f'%fee_amount)
           else
             fee_amount = nil
           end

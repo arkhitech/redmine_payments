@@ -72,16 +72,21 @@ module RedminePayments
         end
         
         def create_with_fee
-          
-          @invoice_payment = InvoicePayment.new(params[:invoice_payment])
+        
+          @invoice_payment = InvoicePayment.new(invoice_payment_params)
           # @invoice.contacts = [Contact.find(params[:contacts])]
           @invoice_payment.invoice = @invoice
           @invoice_payment.author = User.current
           if @invoice_payment.save
+#              byebug
+#              paym_trans_fee = @invoice_payment.payment_transaction_fee
+#              
+#              paym_trans_fee.fee_amount =   BigDecimal(paym_trans_fee.fee_amount) + (BigDecimal(@invoice_payment.amount) * BigDecimal('%.2f'%paym_trans_fee.fee_percentage) / 100)
+#              paym_trans_fee.fee_amount = BigDecimal('%.2f'%paym_trans_fee.fee_amount)
+#              paym_trans_fee.save!
+
             attachments = Attachment.attach_files(@invoice_payment, (params[:attachments] || (params[:invoice_payment] && params[:invoice_payment][:uploads])))
             render_attachment_warning_if_needed(@invoice_payment)
-            @fee = @invoice_payment.build_payment_transaction_fee(params[:payment_transaction_fee])                
-            @fee.save!
             flash[:notice] = l(:notice_successful_create)
             
             respond_to do |format|
@@ -116,7 +121,10 @@ module RedminePayments
           
         end
         private
-        
+        def invoice_payment_params
+          params.require(:invoice_payment).permit(:amount, :payment_date, :description , 
+            payment_transaction_fee_attributes: [:fee_amount , :fee_percentage , :description])
+        end
         def find_invoice_payment_invoice
           invoice_id = params[:invoice_id] || (params[:invoice_payment] && params[:invoice_payment][:invoice_id])
           @invoice = Invoice.find(invoice_id)
