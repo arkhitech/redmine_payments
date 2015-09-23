@@ -1,31 +1,37 @@
 <legend><strong><%= l(:redmine_payment_settings) %></strong></legend>
- 
+
 <table>  
-    <tr>
+  <tr>
     <td><legend><%= l(:email_notification) %></legend></td>
-      <td><%= select_tag('settings[eligible_for_email_notification]', 
-          options_from_collection_for_select(Group.all, :id, :name, 
-            settings['eligible_for_email_notification']), 
-          multiple: true) %>
-      </td>
-    </tr>
-    <tr>
-    <td><legend><%= l(:invoice_currency) %></legend></td>
-<td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
+<td><%= select_tag('settings[eligible_for_email_notification]', 
+    options_from_collection_for_select(Group.all, :id, :name, 
+      settings['eligible_for_email_notification']), 
+    multiple: true) %>
+</td>
 <td></td>
 <td><legend><%= l(:credit_card_fixed_fee) %></legend></td>
 <td><%= text_field_tag('settings[card_fixed_fee]', settings['card_fixed_fee']) %></td>
 </tr>
 <tr>
-  <td><legend><%= l(:payment_currency) %></legend></td>
-<td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
+  <td><legend><%= l(:invoice_currency) %></legend></td>
+<td><%= text_field_tag('settings[invoice_currency]', settings['invoice_currency']) %></td>
 <td></td>
 <td><legend><%= l(:credit_card_fee_percentage) %></legend></td>
 <td><%= text_field_tag('settings[card_fee_percentage]', settings['card_fee_percentage']) %></td>
 </tr>
 <tr>
+  <td><legend><%= l(:payment_currency) %></legend></td>
+<td><%= text_field_tag('settings[payment_currency]', settings['payment_currency']) %></td>
+<td></td>
+<td><legend><%= l(:fee_transaction_tax_amount) %></legend></td>
+<td><%= text_field_tag('settings[fee_transaction_tax_amount]', settings['fee_transaction_tax_amount']) %></td>
+</tr>
+<tr>
   <td><legend><%= l(:OpenExchangeRate_App_ID) %></legend></td>
 <td><%= text_field_tag('settings[open_exchange_rate_app_id]', settings['open_exchange_rate_app_id']) %></td>
+<td></td>
+<td><legend><%= l(:fee_transaction_tax_percentage) %></legend></td>
+<td><%= text_field_tag('settings[fee_transaction_tax_percentage]', settings['fee_transaction_tax_percentage']) %></td>
 </tr>
 
 <tr>

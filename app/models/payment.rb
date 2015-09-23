@@ -232,16 +232,30 @@ class Payment < ActiveRecord::Base
     !errors.any?    
   end
   def record_transaction_fee invoice_payment
-    fixed_fee = BigDecimal(Setting.plugin_redmine_payments['card_fixed_fee'])
+    fixed_fee = 0.00
     fee_percentage = 0.00
+    fixed_tax_amount_on_fee_percentage = 0.00 
+    tax_percentage_on_fee_percentage = 0.00
+    if Setting.plugin_redmine_payments['card_fixed_fee'].present?
+      fixed_fee = BigDecimal(Setting.plugin_redmine_payments['card_fixed_fee'])     
+    end
     if Setting.plugin_redmine_payments['card_fee_percentage'].present?
       fee_percentage = BigDecimal(Setting.plugin_redmine_payments['card_fee_percentage'])      
     end
+    if Setting.plugin_redmine_payments['fee_transaction_tax_amount'].present?
+      fixed_tax_amount_on_fee_percentage = BigDecimal(Setting.plugin_redmine_payments['fee_transaction_tax_amount'])      
+    end                          
+    if Setting.plugin_redmine_payments['fee_transaction_tax_percentage'].present?
+      tax_percentage_on_fee_percentage = BigDecimal(Setting.plugin_redmine_payments['fee_transaction_tax_percentage'])      
+    end
+    
     if fixed_fee > 0 || fee_percentage > 0
       transaction_fee = invoice_payment.build_payment_transaction_fee
       transaction_fee.fee_amount = fixed_fee
       transaction_fee.fee_percentage = fee_percentage
-      transaction_fee.description = "Transaction via credit card: Fee percentage: #{fee_percentage}% Fixed fee: #{fixed_fee}. Total fee: #{invoice_payment.transaction_fee}"
+      transaction_fee.fee_tax_amount = fixed_tax_amount_on_fee_percentage
+      transaction_fee.fee_tax_percentage = tax_percentage_on_fee_percentage
+      transaction_fee.description = "Transaction via credit card: Fee percentage: #{fee_percentage}%(Tax Percentage Over Transaction Fee Percentage: #{tax_percentage_on_fee_percentage},Fixed Tax Amount  Over Transaction Fee Percentage: #{fixed_tax_amount_on_fee_percentage}) Fixed fee: #{fixed_fee}. Total fee: #{invoice_payment.transaction_fee}"
       transaction_fee.save!
     end
   end

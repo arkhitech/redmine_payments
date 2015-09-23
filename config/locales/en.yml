@@ -26,3 +26,5 @@ en:
   payment_invoices : 'Payment Invoices'
   pending_invoices : 'Pending Invoices'                        
   show_project_menu : 'Show in project menu'
+  fee_transaction_tax_percentage : 'Tax Amount Percentage Over Credit Card Fee Percentage'
+  fee_transaction_tax_amount : 'Fixed Tax Amount Over Credit Card Fee Percentage'
