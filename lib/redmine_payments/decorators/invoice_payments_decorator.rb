@@ -72,7 +72,6 @@ module RedminePayments
         end
         
         def create_with_fee
-        
           @invoice_payment = InvoicePayment.new(invoice_payment_params)
           # @invoice.contacts = [Contact.find(params[:contacts])]
           @invoice_payment.invoice = @invoice
