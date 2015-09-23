@@ -6,7 +6,7 @@ module RedminePayments
         
         base.class_eval do
           has_one :payment_transaction_fee , :dependent => :destroy
-          accepts_nested_attributes_for :payment_transaction_fee, reject_if: lambda {|fee| fee[:fee_amount].blank? && fee[:fee_percentage].blank?}
+          accepts_nested_attributes_for :payment_transaction_fee , reject_if: lambda {|fee| fee[:fee_amount].blank? && fee[:fee_percentage].blank?}
           attr_protected :payment_transaction_fee_attributes
         end
       end
@@ -33,7 +33,7 @@ module RedminePayments
             if !self.payment_transaction_fee.fee_tax_percentage.nil?
             tax_fee_percentage_amount = ((fee_percentage_amount * BigDecimal('%.2f'%self.payment_transaction_fee.fee_tax_percentage)) / 100) 
             end
-             if !self.payment_transaction_fee.fee_tax_percentage.nil?
+            if !self.payment_transaction_fee.fee_tax_percentage.nil?
             fixed_tax_amount_over_percentage_fee = BigDecimal(self.payment_transaction_fee.fee_tax_amount)
             end
             total_tax_amount_over_percentage_fee_amount = tax_fee_percentage_amount + fixed_tax_amount_over_percentage_fee

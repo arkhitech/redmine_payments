@@ -16,8 +16,6 @@
   <span id="fee_percentage_amount"></span>
 </p>
 <p><%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
-   <%= fee.hidden_field :fee_tax_amount , value: 0.00 %>
-   <%= fee.hidden_field :fee_tax_percentage , value: 0.00 %>
 <p><label for="payment_net_Amount">Net Payment</label>
   <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" ></input></p>
 <% end %>
