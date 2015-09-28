@@ -20,7 +20,11 @@ module RedminePayments
         end
         def transaction_fee
           if self.payment_transaction_fee.present?
-            fee_percentage_amount = (BigDecimal(self.amount) * BigDecimal('%.2f'%self.payment_transaction_fee.fee_percentage.to_s) / 100)
+            if self.payment_transaction_fee.fee_percentage
+              fee_percentage_amount = (BigDecimal(self.amount) * BigDecimal('%.2f'%self.payment_transaction_fee.fee_percentage) / 100)
+            else
+              fee_percentage_amount = 0
+            end
             fee_amount = fee_percentage_amount + BigDecimal(self.payment_transaction_fee.fee_amount)
             fee_amount = BigDecimal('%.2f'%fee_amount)
             
