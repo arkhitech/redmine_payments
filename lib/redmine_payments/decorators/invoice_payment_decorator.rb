@@ -32,10 +32,10 @@ module RedminePayments
             
             tax_fee_percentage_amount = 0.00
             fixed_tax_amount_over_percentage_fee = 0.00
-            if !self.payment_transaction_fee.fee_tax_percentage.nil?
+            if self.payment_transaction_fee.fee_tax_percentage
               tax_fee_percentage_amount = ((fee_percentage_amount * BigDecimal('%.2f'%self.payment_transaction_fee.fee_tax_percentage)) / 100) 
             end
-            if !self.payment_transaction_fee.fee_tax_percentage.nil?
+            if self.payment_transaction_fee.fee_tax_amount
               fixed_tax_amount_over_percentage_fee = BigDecimal(self.payment_transaction_fee.fee_tax_amount)
             end
             total_tax_amount_over_percentage_fee_amount = tax_fee_percentage_amount + fixed_tax_amount_over_percentage_fee
