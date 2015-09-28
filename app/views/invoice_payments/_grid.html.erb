@@ -1,4 +1,4 @@
-<% sum = 0 %>
+<% net_invoice_amount_sum = invoice_amount_sum = transaction_fee_sum = 0 %>
 
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
  
@@ -6,15 +6,19 @@
   
 
   g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter do |invoice_payment|
-    sum = sum +invoice_payment.amount
+    invoice_amount_sum += invoice_payment.amount
     '%.2f' % invoice_payment.amount
   end
   
   g.column name: 'Fee' do |invoice_payment|
-    '%.2f' % invoice_payment.transaction_fee
+    if invoice_payment.transaction_fee 
+      transaction_fee_sum += invoice_payment.transaction_fee
+      '%.2f' % invoice_payment.transaction_fee
+    end
   end
   
   g.column name: 'Net Payment' do |invoice_payment|
+    net_invoice_amount_sum += invoice_payment.net_payment
     '%.2f' % invoice_payment.net_payment
   end
   
@@ -27,11 +31,11 @@
   end
 
   g.column name: 'Invoice Number',attribute: 'invoice_id' , in_csv: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
-   link_to  invoice_payment.invoice.number,invoice_payment.invoice
+    link_to  invoice_payment.invoice.number,invoice_payment.invoice
   end
   
   g.column name: 'Invoice Number',attribute: 'invoice_id',in_html: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
-   invoice_payment.invoice.number
+    invoice_payment.invoice.number
   end    
       
   g.column name: 'Description', attribute: 'description',detach_with_id: :Description_filter
@@ -58,6 +62,10 @@
   end
   
   g.last_row do |number_of_columns|
-      "<tr><td><b>Total Amount</b></td><td><b>#{'%.2f' % sum}</b></td></tr>"
+      "<tr><th>Total</th>
+      <th>#{'%.2f' % invoice_amount_sum}</th>
+      <th>#{'%.2f' % transaction_fee_sum}</th>
+      <th>#{'%.2f' % net_invoice_amount_sum}</th>
+      </tr>"
   end 
 end -%>

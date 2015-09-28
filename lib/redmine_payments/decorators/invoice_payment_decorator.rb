@@ -13,11 +13,9 @@ module RedminePayments
 
       module InstanceMethods
         def net_payment
-          if self.payment_transaction_fee.present?
-              net_amount = self.amount.to_f - self.transaction_fee
-          else
-            net_amount = nil
-          end
+          net_amount = self.amount.to_f          
+          net_amount -= self.transaction_fee if self.payment_transaction_fee.present?
+          
           net_amount
         end
         def transaction_fee
