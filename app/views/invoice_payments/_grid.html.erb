@@ -11,19 +11,19 @@
   end
   
   g.column name: 'Fee' do |invoice_payment|
-   invoice_payment.transaction_fee
+    '%.2f' % invoice_payment.transaction_fee
   end
   
   g.column name: 'Net Payment' do |invoice_payment|
-  invoice_payment.net_payment
+    '%.2f' % invoice_payment.net_payment
   end
   
   g.column name: 'Fee Description' do |invoice_payment|
-  invoice_payment.fee_description
+    invoice_payment.fee_description
   end    
       
   g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
-    invoice_payment.payment_date.to_s(:db)
+    format_date(invoice_payment.payment_date)
   end
 
   g.column name: 'Invoice Number',attribute: 'invoice_id' , in_csv: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
@@ -54,7 +54,7 @@
   end
   
   g.column name: 'Updated At',attribute: 'updated_at',detach_with_id: :updatedAt_filter do |invoice_payment|
-    invoice_payment.updated_at.to_s(:db)
+    format_date(invoice_payment.updated_at)
   end
   
   g.last_row do |number_of_columns|
