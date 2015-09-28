@@ -12,7 +12,7 @@
   <span id="fee_amount_percentage"></span>
 </p>
 <p>
-  <%= fee.text_field :fee_percentage, id: 'transaction_fee_percentage', :label => l(:fee_percentage), :size => 10, :required => true , :hint => "Only Floats are acceptable"  %>
+  <%= fee.text_field :fee_percentage, id: 'transaction_fee_percentage', :label => l(:fee_percentage), :size => 10  %>
   <span id="fee_percentage_amount"></span>
 </p>
 <p><%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
