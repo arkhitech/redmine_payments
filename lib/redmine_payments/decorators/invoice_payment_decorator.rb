@@ -5,7 +5,7 @@ module RedminePayments
         base.send(:include, InstanceMethods)
         
         base.class_eval do
-          has_one :payment_transaction_fee , :dependent => :destroy
+          has_one :payment_transaction_fee , dependent: :destroy
           accepts_nested_attributes_for :payment_transaction_fee , reject_if: lambda {|fee| fee[:fee_amount].blank? && fee[:fee_percentage].blank?}
           attr_accessible :payment_transaction_fee_attributes
         end

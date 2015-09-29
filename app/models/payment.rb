@@ -182,14 +182,45 @@ class Payment < ActiveRecord::Base
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
     else
-      @invoice_payment = self.invoice.payments.create({amount: self.invoice_amount, payment_date: Date.today,
+      invoice_payment = self.invoice.payments.create({amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.
         payment_currency} #{self.payment_amount}, Transaction ID #{self.
         transaction_id}, Approval Code: #{self.approval_code}"}, 
         without_protection: true)
-      self.record_transaction_fee(@invoice_payment)
+      self.record_transaction_fee(invoice_payment)
       #send email to group
       notify_payment_completed      
+    end
+    
+    !errors.any?    
+    
+
+  end
+
+  def transaction_for_reversal
+    require 'rjb'
+    Rjb::load
+    transaction_class = Rjb::import("ae.co.comtrust.payment.IPG.SPIj.Transaction")
+
+    transaction = transaction_class.new("#{Rails.root}/plugins/redmine_payments/config/SPI.properties")
+    transaction.initialize(STATE_REVERSAL,"1.0")
+
+    transaction.setProperty("TransactionID", self.transaction_id.to_s)
+    transaction.setProperty("Amount", self.payment_amount.to_s)
+    transaction.setProperty("Currency", self.payment_currency.to_s)
+		    
+    result = transaction.execute()
+    self.response_code = transaction.getResponseCode
+    self.response_description = transaction.getResponseDescription
+
+    
+    if self.response_code.to_i > 0
+      logger.warn "Reversal Denied: #{self.inspect}"
+      errors.add(:base, "#{response_code}: #{response_description}")      
+      errors.add(:base, "For more information, please contact your card issuing bank.")
+    else
+      
+      self.invoice_payment.destroy
     end
     
     !errors.any?    
