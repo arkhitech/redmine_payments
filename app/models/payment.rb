@@ -19,11 +19,11 @@ class Payment < ActiveRecord::Base
   belongs_to :project
   #before_create :execute
   validate :validate_credit_card
-  validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == 'STATE_AUTHORIZATION'"
+  validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == STATE_AUTHORIZATION"
     
   validates :payment_amount, :payment_currency, :project_id, presence: true
 
-  validates :transaction_id, presence: true, if: "state == 'STATE_FINALIZATION'"
+  validates :transaction_id, presence: true, if: "state == STATE_FINALIZATION"
   #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
 
   before_save do
@@ -178,12 +178,15 @@ class Payment < ActiveRecord::Base
     self.payment_account = finalization.getProperty("Account")    
     
     if self.response_code.to_i > 0
+      logger.warn "Payment Denied: #{self.inspect}"
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
     else
-      @invoice_payment = InvoicePayment.create!(amount: self.invoice_amount, payment_date: Date.today,
-        invoice_id: self.invoice_id, description: "Payment Amount: #{self.payment_currency} #{self.payment_amount}, Transaction ID #{self.transaction_id}, Approval Code: #{self.approval_code}"
-      )
+      @invoice_payment = self.invoice.payments.create({amount: self.invoice_amount, payment_date: Date.today,
+        invoice_id: self.invoice_id, description: "Payment Amount: #{self.
+        payment_currency} #{self.payment_amount}, Transaction ID #{self.
+        transaction_id}, Approval Code: #{self.approval_code}"}, 
+        without_protection: true)
       self.record_transaction_fee(@invoice_payment)
       #send email to group
       notify_payment_completed      
