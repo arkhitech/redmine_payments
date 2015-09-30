@@ -72,7 +72,7 @@ module RedminePayments
         end
         
         def create_with_fee
-          @invoice_payment = InvoicePayment.new(invoice_payment_params)
+          @invoice_payment = InvoicePayment.new(invoice_payment_params, without_protection: false)
           # @invoice.contacts = [Contact.find(params[:contacts])]
           @invoice_payment.invoice = @invoice
           @invoice_payment.author = User.current
