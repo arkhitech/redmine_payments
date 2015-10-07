@@ -10,9 +10,13 @@ class PaymentsController < ApplicationController
   def index
     return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
       User.current.admin?
-    @invoices = Invoice.where("status_id = ? AND project_id IN (?)", 
-      Invoice::SENT_INVOICE, @project.self_and_descendants.map(&:id))
+    if @project
+      @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE,
+        project_id: @project.self_and_descendants.map(&:id))
       @project_token = @project.token || @project.generate_token
+    else
+      @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE)
+    end
       @tasks_grid = initialize_grid(@invoices,
       :name => 'grid',
       :order_direction => 'desc',
