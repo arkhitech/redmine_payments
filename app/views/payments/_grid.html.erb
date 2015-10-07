@@ -1,10 +1,10 @@
 <%total_amount = total_remaining_balance = 0%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
-  g.column name:  'ID' ,attribute: 'id',in_csv: false,detach_with_id: :id_filter do |invoice|
+  g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
     invoice.id
   end
   
-  g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
+  g.column name:  'ID' ,attribute: 'id',in_csv: false,detach_with_id: :id_filter do |invoice|
     link_to invoice.id, invoice    
   end
       
