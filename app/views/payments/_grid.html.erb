@@ -74,7 +74,7 @@
     '%.2f' % invoice.amount.to_f    
   end
   g.column name: 'Balance' do |invoice|
-    total_balance += invoice.balance
+    total_remaining_balance += invoice.remaining_balance
     '%.2f' % invoice.remaining_balance.to_f    
   end
 
