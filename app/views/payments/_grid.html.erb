@@ -1,10 +1,11 @@
-<%total_amount = total_balance = 0%>
+<%total_amount = total_remaining_balance = 0%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
   g.column name:  'ID' ,attribute: 'id',in_csv: false,detach_with_id: :id_filter do |invoice|
+    invoice.id
   end
   
   g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
-    invoice.id
+    link_to invoice.id, invoice    
   end
       
   g.column name: 'Number' ,attribute: 'number',in_html: false, detach_with_id: :invoicenumber_filter do |invoice|
@@ -68,13 +69,13 @@
   g.column name: 'Currency',attribute: 'currency',detach_with_id: :currency_filter do |invoice|
     invoice.currency 
   end 
-  g.column name: 'Amount',attribute: 'amount' do |invoice|
+  g.column name: 'Amount' do |invoice|
     total_amount += invoice.amount
     '%.2f' % invoice.amount.to_f    
   end
-  g.column name: 'Balance',attribute: 'balance' do |invoice|
-    total_balance += invoice.balance
-    '%.2f' % invoice.balance.to_f    
+  g.column name: 'Balance' do |invoice|
+    total_remaining_balance += invoice.remaining_balance
+    '%.2f' % invoice.remaining_balance.to_f    
   end
 
   if User.current.admin? || User.current.allowed_to?(:make_payment, @project)
@@ -101,7 +102,7 @@
       <th></th>
       <th>#Total</th>
       <th>#{'%.2f' % total_amount}</th>
-      <th>#{'%.2f' % total_balance}</th>
+      <th>#{'%.2f' % total_remaining_balance}</th>
       <th></th>
       </tr>"
   end 
