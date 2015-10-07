@@ -78,7 +78,7 @@ class Payment < ActiveRecord::Base
   end
   
   def invoice_currency
-    read_attribute(:invoice_currency) || Setting.plugin_redmine_payments['invoice_currency']    
+    read_attribute(:invoice_currency) || self.invoice.currency
   end
   
   def payment_currency

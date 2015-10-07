@@ -65,7 +65,8 @@ Redmine::Plugin.register :redmine_payments do
     permission :list_and_edit_invoice_payments,  {invoice_payments: [:index, :edit, :show], copy_invoices: [:index], invoices: [:copy]}
   end
   
-  settings default: {'payment_invoice_currency' => 'USD', '
-      payment_gateway_currency' => 'PKR', 'open_exchange_rate_app_id' => '24505f9c95c7405597f5eb5f43f3ed48'}, 
+  settings default: {
+    'payment_gateway_currency' => 'PKR', 
+    'open_exchange_rate_app_id' => '24505f9c95c7405597f5eb5f43f3ed48'}, 
     :partial => 'settings/payment_settings'
 end

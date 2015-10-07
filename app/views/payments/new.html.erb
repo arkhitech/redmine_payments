@@ -23,12 +23,16 @@
   <script>
     $(document).ready(function() {
       $('#payment_invoice_amount').change(function() {
-        var result = fx.convert($(this).val(), {from: '<%=Setting.plugin_redmine_payments['invoice_currency']%>', to: '<%=Setting.plugin_redmine_payments['payment_currency']%>'});
+        var result = fx.convert($(this).val(), {
+          from: '<%=@payment.invoice_currency%>', 
+          to: '<%=Setting.plugin_redmine_payments['payment_currency']%>'});
         result = parseFloat(Math.round(result * 100) / 100).toFixed(2);
         $('#payment_payment_amount').val(result);
       });
       $('#payment_payment_amount').change(function() {
-        var result = fx.convert($(this).val(), {from: '<%=Setting.plugin_redmine_payments['payment_currency']%>', to: '<%=Setting.plugin_redmine_payments['invoice_currency']%>'});
+        var result = fx.convert($(this).val(), {
+          from: '<%=Setting.plugin_redmine_payments['payment_currency']%>', 
+          to: '<%=@payment.invoice_currency%>'});
         result = parseFloat(Math.round(result * 100) / 100).toFixed(2);
         $('#payment_invoice_amount').val(result);
       });
