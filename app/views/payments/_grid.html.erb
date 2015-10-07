@@ -1,3 +1,4 @@
+<%total_amount = 0%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
   g.column name:  'ID' ,attribute: 'id',in_csv: false,detach_with_id: :id_filter do |invoice|
     link_to invoice.id, invoice
@@ -63,7 +64,8 @@
   end 
 
   g.column name: 'Amount',attribute: 'amount',detach_with_id: :amount_filter do |invoice|
-    invoice.amount.to_f 
+    total_amount += invoice.amount
+    '%.2f' % invoice.amount.to_f    
   end
 
   if User.current.admin? || User.current.allowed_to?(:make_payment, @project)
@@ -75,4 +77,22 @@
       link_to 'Pay',shared_invoice_payments_path(invoice.token || invoice.generate_token)
     end
   end 
+  g.last_row do |number_of_columns|
+      "<tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>#Total</th>
+      <th>#{'%.2f' % total_amount}</th>
+      <th></th>
+      </tr>"
+  end 
+  
 end -%>
