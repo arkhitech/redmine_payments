@@ -56,8 +56,12 @@
 <div class="box tabular">
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
-    <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= payment.remaining_balance_to_s%></p> 
-    <p><%= f.text_field :payment_amount %></p>
+    <p>
+      <strong>(<%=payment.invoice_currency%>)</strong>
+      <%= f.text_field :invoice_amount %> Remaining Balance: <%= payment.remaining_balance_to_s%></p> 
+    <p>
+      <strong>(<%=payment.payment_currency%>)</strong>
+      <%= f.text_field :payment_amount %></p>
   </div>
   <p class="buttons">
     <%= f.button l(:make_payment)%>

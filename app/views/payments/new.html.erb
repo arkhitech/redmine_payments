@@ -5,8 +5,12 @@
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :invoice_id %>
     <p><%= f.text_field :customer_name %></p>
-    <p><%= f.text_field :invoice_amount %> Remaining Balance: <%= @payment.remaining_balance_to_s%></p> 
-    <p><%= f.text_field :payment_amount %></p>
+    <p>
+      <strong>(<%=payment.invoice_currency%>)</strong>
+      <%= f.text_field :invoice_amount%> Remaining Balance: <%= @payment.remaining_balance_to_s%></p> 
+    <p>
+      <strong>(<%=payment.payment_currency%>)</strong>
+      <%= f.text_field :payment_amount %></p>
     <p><%= f.text_field :cc_number %></p>
     <p><%= f.date_select :expiry_date, discard_day: true, start_year: Date.today.year, 
       end_year: (Date.today.year+10), use_month_numbers: true %>
