@@ -21,22 +21,23 @@
     link_to invoice.contact, invoice.contact
   end
 
-  g.column name: 'Invoice Date',attribute: 'invoice_date',detach_with_id: :invoicedate_filter do |invoice|
-    format_date(invoice.invoice_date)
-  end   
       
+  g.column name: 'Subject',attribute: 'subject',detach_with_id: :subject_filter do |invoice|
+    invoice.subject
+  end 
+
   g.column name: 'Description',attribute: 'description',detach_with_id: :description_filter do |invoice|
   invoice.description
   end  
   
+  g.column name: 'Invoice Date',attribute: 'invoice_date',detach_with_id: :invoicedate_filter do |invoice|
+    format_date(invoice.invoice_date)
+  end   
+
   g.column name: 'Due Date',attribute: 'due_date',detach_with_id: :duedate_filter do |invoice|
     format_date(invoice.due_date) 
   end    
-      
-  g.column name: 'Currency',attribute: 'currency',detach_with_id: :currency_filter do |invoice|
-    invoice.currency 
-  end 
-  
+        
   g.column name: 'Status',attribute: 'status_id',detach_with_id: :status_filter do |invoice|
     invoice.status 
   end 
@@ -46,11 +47,11 @@
   end    
   
   g.column name: 'Project ID',attribute: 'project_id',in_html: false,custom_filter: [:project, :to_option],detach_with_id: :projectid_filter  do |invoice|
-  invoice.project.name
+    invoice.project.name
   end 
 
-   g.column name: 'Assigned To',attribute: 'assigned_to_id',in_csv: false,detach_with_id: :assigned_to_filter do |invoice|
-  invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to)
+  g.column name: 'Assigned To',attribute: 'assigned_to_id',in_csv: false,detach_with_id: :assigned_to_filter do |invoice|
+    invoice.assigned_to.nil? ? '':link_to(invoice.assigned_to.name, invoice.assigned_to)
   end 
   
   g.column name: 'Assigned To',attribute: 'assigned_to_id',in_html: false,detach_with_id: :assigned_to_filter do |invoice|
@@ -64,15 +65,14 @@
     invoice.author.name
   end    
 
-  g.column name: 'Subject',attribute: 'subject',detach_with_id: :subject_filter do |invoice|
-    invoice.subject
+  g.column name: 'Currency',attribute: 'currency',detach_with_id: :currency_filter do |invoice|
+    invoice.currency 
   end 
-
-  g.column name: 'Amount',attribute: 'amount',detach_with_id: :amount_filter do |invoice|
+  g.column name: 'Amount',attribute: 'amount' do |invoice|
     total_amount += invoice.amount
     '%.2f' % invoice.amount.to_f    
   end
-  g.column name: 'Balance',attribute: 'amount',detach_with_id: :amount_filter do |invoice|
+  g.column name: 'Balance',attribute: 'balance' do |invoice|
     total_balance += invoice.balance
     '%.2f' % invoice.balance.to_f    
   end
