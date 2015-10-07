@@ -5,11 +5,10 @@ class PaymentsController < ApplicationController
   #skip_before_filter :authenticate_user, only: [:shared_invoice,:shared_project]
   skip_before_filter :check_if_login_required, only: [:shared_invoice,:shared_project,:generate,:register, :finalize]
   skip_before_filter :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
-  before_filter :find_project, except: [:shared_invoice, :shared_project, :generate_invoice_payment_token]
+  before_filter :find_project, except: [:index, :shared_invoice, :shared_project, :generate_invoice_payment_token]
   
   def index
-    return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
-      User.current.admin?
+    return deny_access unless User.current.admin? || User.current.allowed_to?(:make_payment, @project)
     if @project
       @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE,
         project_id: @project.self_and_descendants.map(&:id))

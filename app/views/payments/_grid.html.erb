@@ -66,9 +66,9 @@
     invoice.amount.to_f 
   end
 
-  if User.current.allowed_to?(:make_payment, @project) || User.current.admin?
+  if User.current.admin? || User.current.allowed_to?(:make_payment, @project)
     g.column name: 'Action',in_csv: false do |invoice|
-      link_to 'Pay', generate_project_payments_path(@project, invoice_id: invoice.id)
+      link_to 'Pay', generate_project_payments_path(@project || invoice.project, invoice_id: invoice.id)
     end
   else 
     g.column name: 'Action',in_csv: false do |invoice|
