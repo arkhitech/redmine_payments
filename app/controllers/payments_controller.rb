@@ -16,6 +16,7 @@ class PaymentsController < ApplicationController
     else
       @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE)
     end
+    @currency_hash = Hash[ContactsSetting.major_currencies.map{|currency| [currency, 0.00]}]
       @tasks_grid = initialize_grid(@invoices,
       :name => 'grid',
       :order_direction => 'desc',

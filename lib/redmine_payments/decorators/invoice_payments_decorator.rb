@@ -55,7 +55,9 @@ module RedminePayments
             #            end
           end
           #byebug
-          
+             @net_amount_hash = Hash[ContactsSetting.major_currencies.map{|currency| [currency, 0.00]}]
+             @transaction_fee_hash = Hash[ContactsSetting.major_currencies.map{|currency| [currency, 0.00]}]
+             @invoice_payment_amount_hash = Hash[ContactsSetting.major_currencies.map{|currency| [currency, 0.00]}]
           @tasks_grid = initialize_grid(@invoice_payments, 
             :order => 'id',
             :name => 'grid',
