@@ -3,6 +3,39 @@
  
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
   
+  g.column name: 'Invoice Number',attribute: 'invoice_id' , in_csv: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
+    link_to  invoice_payment.invoice.number,invoice_payment.invoice
+  end
+  
+  g.column name: 'Invoice Number',attribute: 'invoice_id',in_html: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
+    invoice_payment.invoice.number
+  end    
+      
+  g.column name: 'Description', attribute: 'description',detach_with_id: :Description_filter
+ 
+     
+  g.column name: 'Author', attribute: 'author_id' , in_csv: false , custom_filter: [:author, :to_option] ,detach_with_id: :author_filter do |invoice_payment|
+  invoice_payment.author && link_to_user(invoice_payment.author)
+  end
+  
+   g.column name: 'Author', attribute: 'author_id' , in_html: false, custom_filter: [:author, :to_option] ,detach_with_id: :author_filter do |invoice_payment|
+   invoice_payment.author
+  end
+
+  g.column name: 'Client', attribute: 'contact_id', in_html: false, model: 'Invoice', custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
+    invoice_payment.invoice.contact    
+  end
+  g.column name: 'Client', attribute: 'contact_id', in_csv: false, model: 'Invoice', custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
+    link_to invoice_payment.invoice.contact, invoice_payment.invoice.contact
+  end
+
+  g.column name: 'Created At',attribute: 'created_at',detach_with_id: :createdAt_filter do |invoice_payment|
+    format_date(invoice_payment.created_at)
+  end
+  
+  g.column name: 'Updated At',attribute: 'updated_at',detach_with_id: :updatedAt_filter do |invoice_payment|
+    format_date(invoice_payment.updated_at)
+  end
 
   g.column name: 'Currency' do |invoice_payment|
     invoice_payment.currency 
@@ -35,37 +68,6 @@
     format_date(invoice_payment.payment_date)
   end
 
-  g.column name: 'Invoice Number',attribute: 'invoice_id' , in_csv: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
-    link_to  invoice_payment.invoice.number,invoice_payment.invoice
-  end
-  
-  g.column name: 'Invoice Number',attribute: 'invoice_id',in_html: false,detach_with_id: :invoicenumber_filter do |invoice_payment|
-    invoice_payment.invoice.number
-  end    
-      
-  g.column name: 'Description', attribute: 'description',detach_with_id: :Description_filter
- 
-     
-  g.column name: 'Author', attribute: 'author_id' , in_csv: false , custom_filter: [:author, :to_option] ,detach_with_id: :author_filter do |invoice_payment|
-  invoice_payment.author && link_to_user(invoice_payment.author)
-  end
-  
-   g.column name: 'Author', attribute: 'author_id' , in_html: false, custom_filter: [:author, :to_option] ,detach_with_id: :author_filter do |invoice_payment|
-   invoice_payment.author
-  end
-
-  g.column name: 'Client', attribute: 'contact_id' , :model => 'Invoice' , custom_filter: [:invoice , :to_option] , detach_with_id: :client_filter do |invoice_payment|
-  invoice_payment.invoice.contact
-  end
-
-  g.column name: 'Created At',attribute: 'created_at',detach_with_id: :createdAt_filter do |invoice_payment|
-    invoice_payment.created_at.to_s(:db)
-  end
-  
-  g.column name: 'Updated At',attribute: 'updated_at',detach_with_id: :updatedAt_filter do |invoice_payment|
-    format_date(invoice_payment.updated_at)
-  end
-  
   g.last_row do |number_of_columns|
         str_currencies = []
         net_amount_string = []
@@ -78,17 +80,17 @@
           net_amount_string << '%.2f' % value
         end
       "<tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
         <th>Totals</th>
         <th>#{str_currencies.join('<br/>')}</th>
         <th>#{invoice_payment_amount_string.join('<br/>')}</th>
         <th>#{transaction_fee_string.join('<br/>')}</th>
         <th>#{net_amount_string.join('<br/>')}</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
         <th></th>
         <th></th>
        </tr>"
