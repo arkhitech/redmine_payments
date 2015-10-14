@@ -37,6 +37,10 @@
     format_date(invoice_payment.updated_at)
   end
 
+  g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
+    format_date(invoice_payment.payment_date)
+  end
+
   g.column name: 'Currency' do |invoice_payment|
     invoice_payment.currency 
   end
@@ -64,10 +68,6 @@
     invoice_payment.fee_description
   end    
       
-  g.column name: 'Date of Payment', attribute: 'payment_date',detach_with_id: :paymentdate_filter do |invoice_payment|
-    format_date(invoice_payment.payment_date)
-  end
-
   g.last_row do |number_of_columns|
         str_currencies = []
         net_amount_string = []
@@ -86,12 +86,12 @@
         <th></th>
         <th></th>
         <th></th>
+        <th></th>
         <th>Totals</th>
         <th>#{str_currencies.join('<br/>')}</th>
         <th>#{invoice_payment_amount_string.join('<br/>')}</th>
         <th>#{transaction_fee_string.join('<br/>')}</th>
         <th>#{net_amount_string.join('<br/>')}</th>
-        <th></th>
         <th></th>
        </tr>"
   end 
