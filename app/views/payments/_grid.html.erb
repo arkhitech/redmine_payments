@@ -1,4 +1,4 @@
-<%total_amounts = total_remaining_balances = {}%>
+<%total_amounts = {}; total_remaining_balances = {}%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
   g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
     invoice.id
