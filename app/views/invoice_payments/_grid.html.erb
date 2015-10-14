@@ -1,4 +1,4 @@
-<%transaction_fee_totals = net_amount_totals = invoice_payment_amount_totals = {}%>
+<%transaction_fee_totals = {}; net_amount_totals = {}; invoice_payment_amount_totals = {}%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
  
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
@@ -73,9 +73,9 @@
         invoice_payment_amount_string = []
         net_amount_totals.each_pair do |key, value|
           str_currencies << key
-          invoice_payment_amount_string << "#{'%.2f' % invoice_payment_amount_totals[key]}"
-          transaction_fee_string << "#{'%.2f' % transaction_fee_totals[key].to_f}"
-          net_amount_string << "#{'%.2f' % value}"
+          invoice_payment_amount_string << '%.2f' % invoice_payment_amount_totals[key]
+          transaction_fee_string << '%.2f' % transaction_fee_totals[key].to_f
+          net_amount_string << '%.2f' % value
         end
       "<tr>
         <th>Totals</th>
