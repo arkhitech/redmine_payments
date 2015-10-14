@@ -16,7 +16,7 @@ class PaymentsController < ApplicationController
     else
       @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE)
     end
-      @tasks_grid = initialize_grid(@invoices,
+    @tasks_grid = initialize_grid(@invoices,
       :name => 'grid',
       :order_direction => 'desc',
       :enable_export_to_csv => true,

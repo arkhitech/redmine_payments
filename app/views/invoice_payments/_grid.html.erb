@@ -1,27 +1,32 @@
-<% net_invoice_amount_sum = invoice_amount_sum = transaction_fee_sum = 0 %>
-
+<%transaction_fee_totals = net_amount_totals = invoice_payment_amount_totals = {}%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
  
   g.column name:  'ID',attribute: 'id', detach_with_id: :id_filter
   
 
+  g.column name: 'Currency' do |invoice_payment|
+    invoice_payment.currency 
+  end
   g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter do |invoice_payment|
-    invoice_amount_sum += invoice_payment.amount
+    invoice_payment_amount_totals[invoice_payment.currency] ||= 0
+    invoice_payment_amount_totals[invoice_payment.currency] += invoice_payment.amount
     '%.2f' % invoice_payment.amount
   end
   
   g.column name: 'Fee' do |invoice_payment|
     if invoice_payment.transaction_fee 
-      transaction_fee_sum += invoice_payment.transaction_fee
+      transaction_fee_totals[invoice_payment.currency] ||= 0
+      transaction_fee_totals[invoice_payment.currency] += invoice_payment.transaction_fee
       '%.2f' % invoice_payment.transaction_fee
     end
   end
   
   g.column name: 'Net Payment' do |invoice_payment|
-    net_invoice_amount_sum += invoice_payment.net_payment
+    net_amount_totals[invoice_payment.currency] ||= 0
+    net_amount_totals[invoice_payment.currency] += invoice_payment.net_payment
     '%.2f' % invoice_payment.net_payment
   end
-  
+
   g.column name: 'Fee Description' do |invoice_payment|
     invoice_payment.fee_description
   end    
@@ -62,10 +67,30 @@
   end
   
   g.last_row do |number_of_columns|
-      "<tr><th>Total</th>
-      <th>#{'%.2f' % invoice_amount_sum}</th>
-      <th>#{'%.2f' % transaction_fee_sum}</th>
-      <th>#{'%.2f' % net_invoice_amount_sum}</th>
-      </tr>"
+        str_currencies = []
+        net_amount_string = []
+        transaction_fee_string = []
+        invoice_payment_amount_string = []
+        net_amount_totals.each_pair do |key, value|
+          str_currencies << key
+          invoice_payment_amount_string << "#{'%.2f' % invoice_payment_amount_totals[key]}"
+          transaction_fee_string << "#{'%.2f' % transaction_fee_totals[key].to_f}"
+          net_amount_string << "#{'%.2f' % value}"
+        end
+      "<tr>
+        <th>Totals</th>
+        <th>#{str_currencies.join('<br/>')}</th>
+        <th>#{invoice_payment_amount_string.join('<br/>')}</th>
+        <th>#{transaction_fee_string.join('<br/>')}</th>
+        <th>#{net_amount_string.join('<br/>')}</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+       </tr>"
   end 
 end -%>
