@@ -5,6 +5,23 @@ label
     margin-left: 20px;
     width: 125px;
 }
+ .pay
+  {  
+      background-color: #EEEEEE;
+      color: #333333;
+      padding: 2px 6px 2px 6px;
+      border-top: 1px solid #CCCCCC;
+      border-bottom: 1px solid #333333;
+      border-right: 1px solid #333333;
+      border-left:  1px solid #CCCCCC;
+      text-decoration: none;
+      border-radius: 2px;
+  }
+   .pay:hover {
+     background-color: #CCCCCC;
+     text-decoration: none;
+     color: black;
+    }
 .criteria .wg-detached-filter .custom-dropdown-container
   { display: inline;}
  .criteria .wg-detached-filter .date-filter
@@ -82,6 +99,7 @@ label
    {
      display: none;
    }
+   
    .wice-grid .export-to-csv-button.clickable {
     background: transparent url("/plugin_assets/redmine_payments/images/icons/grid/page_white_excel.png") no-repeat scroll 0% 0%;
     width: 16px;
@@ -91,4 +109,4 @@ label
    {
     margin-left: 0px;
     }
- 
+   
