@@ -1,3 +1,4 @@
+<%currency_hash = {}%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
   g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
     invoice.id
@@ -69,7 +70,8 @@
     invoice.currency 
   end 
   g.column name: 'Amount' do |invoice|
-    @currency_hash[invoice.currency]= @currency_hash[invoice.currency] + invoice.amount
+    currency_hash[invoice.currency] ||= 0
+    currency_hash[invoice.currency] += invoice.amount
     invoice.amount
   end
   g.column name: 'Balance' do |invoice|
@@ -87,7 +89,7 @@
   end 
   g.last_row do |number_of_columns|
         amount_string =""
-        @currency_hash.each_pair do |key, value|
+        currency_hash.each_pair do |key, value|
         amount_string = amount_string + "|#{key}|#{'%.2f' % value}|"
         end
       "<tr>
