@@ -107,9 +107,11 @@
       var invoiceAmount = $("#invoice_payment_amount"); 
       var netAmount = $("#payment_net_Amount"); 
       
-      var feePercentage = (inputtxt.val()*1.0).toFixed(2);      
+      var feePercentage = ($("#transaction_fee_percentage").val()*1.0).toFixed(2);      
       var feePercentageAmount = (feePercentage/100*invoiceAmount.val()).toFixed(2);
-      feePercentageAmountView.text(feePercentageAmount);
+      if(feePercentage > 0) {
+        feePercentageAmountView.text(feePercentageAmount);
+      }
       
       var feeAmount = $( "#transaction_fee_amount").val()*1.0;
       var totalFee = feePercentageAmount*1.0 + feeAmount*1.0;
