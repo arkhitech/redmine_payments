@@ -1,4 +1,4 @@
-<%currency_hash = {}%>
+<%total_amounts = total_remaining_balances = {}%>
 <%=define_grid(@tasks_grid, hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
   g.column name:  'ID' ,attribute: 'id',in_html: false,detach_with_id: :id_filter do |invoice|
     invoice.id
@@ -70,11 +70,13 @@
     invoice.currency 
   end 
   g.column name: 'Amount' do |invoice|
-    currency_hash[invoice.currency] ||= 0
-    currency_hash[invoice.currency] += invoice.amount
-    invoice.amount
+    total_amounts[invoice.currency] ||= 0
+    total_amounts[invoice.currency] += invoice.amount
+    '%.2f' % invoice.amount
   end
   g.column name: 'Balance' do |invoice|
+    total_remaining_balances[invoice.currency] ||= 0
+    total_remaining_balances[invoice.currency] += invoice.remaining_balance
     '%.2f' % invoice.remaining_balance.to_f    
   end
 
@@ -88,26 +90,30 @@
     end
   end 
   g.last_row do |number_of_columns|
-        amount_string =""
-        currency_hash.each_pair do |key, value|
-        amount_string = amount_string + "|#{key}|#{'%.2f' % value}|"
+        str_total_amounts = []
+        str_total_remaining_balances = []
+        str_currencies = []
+        total_amounts.each_pair do |key, value|
+          str_currencies << key
+          str_total_amounts << '%.2f' % value
+          str_total_remaining_balances << '%.2f' % total_remaining_balances[key]
         end
       "<tr>
-      <th>|Totals</th>
-      <th>#{amount_string}|</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>Totals</th>
+        <th>#{str_currencies.join('<br/>')}</th>
+        <th>#{str_total_amounts.join('<br/>')}</th>
+        <th>#{str_total_remaining_balances.join('<br/>')}</th>
+        <th></th>
       </tr>"
   end 
   
