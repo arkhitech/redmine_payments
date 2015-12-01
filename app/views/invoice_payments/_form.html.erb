@@ -4,7 +4,10 @@
 <div class="box tabular">
 <p><%= f.text_field :amount, :label => l(:field_invoice_amount), :size => 10, :required => true %></p>
 <p><%= f.text_field :payment_date, :label => l(:label_invoice_payment_date), :size => 12, :required => true %><%= calendar_for('invoice_payment_payment_date') %> </p>
+<p><%= f.text_field :exchange_rate, id: 'transaction_exchange_rate',:label => l(:field_exchange_rate), :size => 10, :required => true, :value => 1.00  %></p>
 <p><%= f.text_field :description, :style => "width: 98%;" %></p>
+<p><%= f.text_field :transaction_reference  %></p>
+<p><%= f.text_field :bank_reference  %></p>
 <%@invoice_payment.build_payment_transaction_fee%>
 <%=f.fields_for :payment_transaction_fee do |fee| %>
 <p>
@@ -19,6 +22,13 @@
 <p><label for="payment_net_Amount">Net Payment</label>
   <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" ></input></p>
 <% end %>
+
+<p><%= f.text_field :converted_amount, id: 'transaction_converted_amount',:label => l(:field_converted_amount), :size => 10,:value => @invoice_payment.amount %></p>
+
+
+<p><%= f.select :converted_currency, collection_for_currencies_select, :label => l(:field_converted_currency), :include_blank => true  %></p>
+ 
+
 <% @invoice_payment.custom_field_values.each do |value| %>
   <p>
     <%= custom_field_tag_with_label :invoice_payment, value %>
@@ -41,9 +51,10 @@
     var inputtxt = $("#transaction_fee_amount");  
     if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {   
       var netAmount = $("#payment_net_Amount");
-      var invoiceAmount = $("#invoice_payment_amount"); 
-      var feeAmountPercentageView = $("#fee_amount_percentage"); 
-      
+      var feeAmountPercentageView = $("#fee_amount_percentage");
+       var invoiceAmount = $("#invoice_payment_amount"); 
+       
+    
       var feeAmount = (inputtxt.val()*1.0).toFixed(2);
       var feeAmountPercentage = ((feeAmount/invoiceAmount.val())*100).toFixed(2);
       feeAmountPercentageView.text(feeAmountPercentage+'%');
@@ -55,6 +66,8 @@
       netAmount.val((invoiceAmount.val()*1.0 - totalFee).toFixed(2));
       
       inputtxt.val(feeAmount);
+        
+   
     } else {
       inputtxt.val('');
     }     
@@ -63,9 +76,10 @@
     var inputtxt = $("#transaction_fee_percentage");  
     if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {   
       var feePercentageAmountView = $("#fee_percentage_amount");
-      var invoiceAmount = $("#invoice_payment_amount"); 
+     
       var netAmount = $("#payment_net_Amount"); 
-      
+      var invoiceAmount = $("#invoice_payment_amount"); 
+     
       var feePercentage = (inputtxt.val()*1.0).toFixed(2);      
       var feePercentageAmount = (feePercentage/100*invoiceAmount.val()).toFixed(2);
       feePercentageAmountView.text(feePercentageAmount);
@@ -76,6 +90,7 @@
       netAmount.val((invoiceAmount.val()*1.0 - totalFee).toFixed(2));
       
       inputtxt.val(feePercentage);
+     
     } else {
       inputtxt.val('');
     }     
@@ -93,6 +108,7 @@
       feeAmount.val(totalFee);
       feePercentage.val('');
       inputtxt.val(netAmount);
+     
       
       $("#fee_percentage_amount").text('');
       $("#fee_amount_percentage").text('');
@@ -119,8 +135,50 @@
       netAmount.val((invoiceAmount.val()*1.0 - totalFee).toFixed(2));
       
       inputtxt.val((invoiceAmount.val()*1.0).toFixed(2));
+      
+  
+      
+     var convertedCurrencyView = $("#transaction_converted_amount");
+     var exchangeRateView = $("#transaction_exchange_rate");
+     
+     var convertedCurrencyValue = (exchangeRateView.val()*invoiceAmount.val());
+     convertedCurrencyView.val(convertedCurrencyValue.toFixed(2)); 
+      
     } else {
       inputtxt.val('');
     }
+  });
+  $("#transaction_exchange_rate" ).change(function () {
+   var inputtxt = $("#transaction_exchange_rate"); 
+   if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
+     var convertedCurrencyView = $("#transaction_converted_amount");
+     var invoiceAmount = $("#invoice_payment_amount"); 
+     
+     var convertedCurrencyValue = (inputtxt.val()*invoiceAmount.val());
+     convertedCurrencyView.val(convertedCurrencyValue.toFixed(2));
+     
+   inputtxt.val((inputtxt.val()*1.0).toFixed(2));
+     
+   }else {
+      inputtxt.val('');
+    }
+    
+  });
+  $( "#transaction_converted_amount" ).change(function () {
+  var inputtxt = $("#transaction_converted_amount"); 
+   if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
+     var exchangeRateView = $("#transaction_exchange_rate");
+     var invoiceAmount = $("#invoice_payment_amount"); 
+     
+     var exchangeRateValue=(inputtxt.val()/invoiceAmount.val());
+     exchangeRateView.val(exchangeRateValue.toFixed(2));
+     
+     inputtxt.val((inputtxt.val()*1.0).toFixed(2));
+     
+     
+   }else {
+      inputtxt.val('');
+    }
+    
   });
 </script>

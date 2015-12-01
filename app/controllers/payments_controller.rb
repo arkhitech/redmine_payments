@@ -7,6 +7,7 @@ class PaymentsController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
   before_filter :find_project, except: [:index, :shared_invoice, :shared_project, :generate_invoice_payment_token]
   
+  
   def index
     return deny_access unless User.current.admin? || User.current.allowed_to?(:make_payment, @project)
     if @project
