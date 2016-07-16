@@ -47,19 +47,8 @@
     invoice_payment.currency 
   end
 
-  g.column name: 'Converted Currency' do |invoice_payment|
-       total_currencies[invoice_payment.converted_currency]||= 0
-        
-    invoice_payment.converted_currency 
-  end
   
 
-  g.column name: 'Exchange Rate',attribute: 'exchange_rate',detach_with_id: :exchange_rate_filter   do |invoice_payment|
-    invoice_payment.exchange_rate
-  end      
-
- 
-  
   g.column name: 'Amount' , attribute: 'amount' ,detach_with_id: :amount_filter do |invoice_payment|
     invoice_payment_amount_totals[invoice_payment.currency] ||= 0
     invoice_payment_amount_totals[invoice_payment.currency] += invoice_payment.amount
@@ -67,8 +56,22 @@
   end
 
 
- 
-      
+  g.column name: 'Exchange Rate',attribute: 'exchange_rate',detach_with_id: :exchange_rate_filter   do |invoice_payment|
+    invoice_payment.exchange_rate
+  end      
+
+  g.column name: 'Converted Currency' do |invoice_payment|
+       total_currencies[invoice_payment.converted_currency]||= 0
+        
+    invoice_payment.converted_currency 
+  end
+
+  g.column name: 'Converted Amount' , attribute: 'converted_amount',detach_with_id: :converted_amount_filter do |invoice_payment|
+    
+    invoice_payment_converted_amount_totals[invoice_payment.converted_currency] ||= 0
+    invoice_payment_converted_amount_totals[invoice_payment.converted_currency] += invoice_payment.converted_amount
+    '%.2f' % invoice_payment.converted_amount
+  end
 
   g.column name: 'Fee' do |invoice_payment|
     if invoice_payment.transaction_fee 
@@ -88,12 +91,6 @@
     '%.2f' % invoice_payment.net_payment
   end
 
-  g.column name: 'Converted Amount' , attribute: 'converted_amount',detach_with_id: :converted_amount_filter do |invoice_payment|
-    
-    invoice_payment_converted_amount_totals[invoice_payment.converted_currency] ||= 0
-    invoice_payment_converted_amount_totals[invoice_payment.converted_currency] += invoice_payment.converted_amount
-    '%.2f' % invoice_payment.converted_amount
-  end 
    
       g.last_row do |number_of_columns|
         str_currencies = []
@@ -104,38 +101,32 @@
         
         
         total_currencies.each_pair do |key, value|
-          
-          
           str_currencies << key
           
           if invoice_payment_amount_totals[key]
-          invoice_payment_amount_string << '%.2f' % invoice_payment_amount_totals[key]
+            invoice_payment_amount_string << '%.2f' % invoice_payment_amount_totals[key]
           else
             invoice_payment_amount_string << '-'
           end
         
           if invoice_payment_converted_amount_totals[key]
-          converted_amount_string<< '%.2f' % invoice_payment_converted_amount_totals[key]
+            converted_amount_string<< '%.2f' % invoice_payment_converted_amount_totals[key]
           else
             converted_amount_string << '-'
-          end
-          
+          end          
         
           if transaction_fee_totals[key]
-          transaction_fee_string << '%.2f' % transaction_fee_totals[key].to_f
-           else
+            transaction_fee_string << '%.2f' % transaction_fee_totals[key].to_f
+          else
             transaction_fee_string << '-'
           end
         
           if net_amount_totals[key]
-          net_amount_string << '%.2f' % net_amount_totals[key]
+            net_amount_string << '%.2f' % net_amount_totals[key]
           else
             net_amount_string << '-'
           end
         end
-        
-        
-      
         
       "<tr>
         <th></th>
@@ -146,16 +137,14 @@
         <th></th>
         <th></th>
         <th>Totals</th>
-        <th></th>
-        <th></th>
         <th>#{str_currencies.join('<br/>')}</th>
         <th>#{invoice_payment_amount_string.join('<br/>')}</th>
-        
-       
+        <th></th>
+        <th></th>
+        <th>#{converted_amount_string.join('<br/>')}</th>
         <th>#{transaction_fee_string.join('<br/>')}</th>
         <th></th>
         <th>#{net_amount_string.join('<br/>')}</th>
-        <th>#{converted_amount_string.join('<br/>')}</th>
         
        </tr>"
         
