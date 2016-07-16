@@ -3,24 +3,36 @@
 <table border="1" style="text-align:center">
     <thead>
       <tr>
-        <th> ID</th>
-        <th>Customer</th>
-        <th>Card Number</th>
-        <th>Payment Account</th>
-        <th>Amount</th>
-        <th>Remaining Amount</th>
+        <th>ID</th>
         <th>Invoice Number</th>
+        <th>Description</th>
+        <th>Author</th>
+        <th>Client</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Date of Payment</th>
+        <th>Currency</th>
+        <th>Amount</th>
+        <th>Fee</th>
+        <th>Fee Description</th>
+        <th>Net Payment</th>
       </tr>
     </thead>
     <tbody>
         <tr>
-          <td><%=@invoice.id %></td>
-          <td><%=@payment.customer_name%></td>
-          <td><%=@payment.payment_card_number%></td>
-          <td><%=@payment.payment_account%></td>
-          <td><%=@invoice.amount%></td>
-          <td><%=@payment.remaining_balance_to_s%></td>
-          <td><%=link_to @invoice.number, invoice_url(@invoice)%></td>
+          <td><%=@invoice_payment.id %></td>
+          <td><%=link_to  @invoice.number,invoice_url(@invoice)%></td>
+          <td><%=@invoice_payment.description%></td>
+          <td><%=@invoice_payment.author%></td>
+          <td><%=@invoice.contact%></td>
+          <td><%=@invoice_payment.created_at.strftime('%m/%d/%Y')%></td>
+          <td><%=@invoice_payment.updated_at.strftime('%m/%d/%Y')%></td>
+          <td><%=@invoice_payment.payment_date.strftime('%m/%d/%Y')%></td>
+          <td><%=@invoice_payment.currency%></td>
+          <td><%=@invoice_payment.amount%></td>
+          <td><%='%.2f' % @invoice_payment.transaction_fee if @invoice_payment.transaction_fee%></td>
+          <td><%=@invoice_payment.fee_description%></td>
+          <td><%='%.2f' % @invoice_payment.net_payment%></td>
         </tr>
     </tbody>
   </table>
