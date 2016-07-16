@@ -30,7 +30,7 @@ resources :projects do
   end
   #  resources :invoice_payments
 end
- resources :payments, only: [] do
+ resources :payments, only: [:index] do
   collection do
     get  'shared_invoice/:token' => 'payments#shared_invoice', as: :shared_invoice
    

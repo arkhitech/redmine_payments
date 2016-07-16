@@ -103,7 +103,7 @@ class PaymentsController < ApplicationController
   def create
     return deny_access unless User.current.allowed_to?(:make_payment, @project) ||
       User.current.admin?
-    @payment = Payment.new(params[:payment])
+    @payment = Payment.new(params.require(:payment).permit!)
     @payment.state = Payment::STATE_AUTHORIZATION
     
     if @payment.save
@@ -118,8 +118,8 @@ class PaymentsController < ApplicationController
   end
   
   def register
-#    @payment = Payment.new(params[:payment])
-    @payment = Payment.new(payments_params)
+    @payment = Payment.new(params.require(:payment).permit!)
+#    @payment = Payment.new(payments_params)
     @payment.customer_name ||= @payment.invoice.contact.name unless @payment.invoice.contact.nil?   
     @payment.state = Payment::STATE_REGISTRATION
     if @payment.save
@@ -136,7 +136,7 @@ class PaymentsController < ApplicationController
     @payment = Payment.where(project_id: @project.self_and_descendants.map(&:id), id: params[:id]).first
     @payment.state = Payment::STATE_FINALIZATION
     @payment.transaction_id = params[:TransactionID]
-    
+
     if @payment.save
       render text: "<table> <h1> Thank you for the payment! </h1> <tr> <th> Payment amount: </th> <td> #{@payment.
       invoice_currency} #{@payment.invoice_amount} (#{@payment.

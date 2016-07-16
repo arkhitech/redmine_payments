@@ -119,8 +119,9 @@ module RedminePayments
         end
         private
         def invoice_payment_params
-          params.require(:invoice_payment).permit(:amount, :payment_date, :description , 
-            payment_transaction_fee_attributes: [:fee_amount , :fee_percentage , :description])
+          params[:invoice_payment]
+#          params.require(:invoice_payment).permit(:amount, :payment_date, :description , 
+#            payment_transaction_fee_attributes: [:fee_amount , :fee_percentage , :description])
         end
         def find_invoice_payment_invoice
           invoice_id = params[:invoice_id] || (params[:invoice_payment] && params[:invoice_payment][:invoice_id])

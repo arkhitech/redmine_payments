@@ -25,7 +25,7 @@ module RedminePayments
             else
               fee_percentage_amount = 0
             end
-            fee_amount = fee_percentage_amount + BigDecimal(self.payment_transaction_fee.fee_amount)
+            fee_amount = fee_percentage_amount + BigDecimal(self.payment_transaction_fee.fee_amount || 0)
             fee_amount = BigDecimal('%.2f'%fee_amount)
             
             ############## calculation for tax over transaction fee percentage #################

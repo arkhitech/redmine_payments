@@ -19,19 +19,19 @@ class Payment < ActiveRecord::Base
   belongs_to :project
   #before_create :execute
   validate :validate_credit_card
-  validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == STATE_AUTHORIZATION"
+  validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == Payment::STATE_AUTHORIZATION"
     
   validates :payment_amount, :payment_currency, :project_id, presence: true
 
-  validates :transaction_id, presence: true, if: "state == STATE_FINALIZATION"
-  #validates :return_path, presence: true, if: 'state == STATE_REGISTRATION'
+  validates :transaction_id, presence: true, if: "state == Payment::STATE_FINALIZATION"
+  #validates :return_path, presence: true, if: 'state == Payment::STATE_REGISTRATION'
 
   before_save do
-    if self.state == STATE_REGISTRATION
+    if self.state == Payment::STATE_REGISTRATION
 #      transaction_for_registration
-    elsif self.state == STATE_FINALIZATION
+    elsif self.state == Payment::STATE_FINALIZATION
       transaction_for_finalization
-    elsif self.state == STATE_AUTHORIZATION
+    elsif self.state == Payment::STATE_AUTHORIZATION
       authorize_transaction
     else
       errors.add(:base, 'Unknown state of payment')
@@ -52,7 +52,7 @@ class Payment < ActiveRecord::Base
   private :notify_payment_completed
   
   def validate_credit_card
-    unless state == STATE_AUTHORIZATION
+    unless state == Payment::STATE_AUTHORIZATION
       return
     end
     if cc_number.present? && !CreditCardValidator::Validator.valid?(cc_number)
