@@ -28,3 +28,8 @@ en:
   show_project_menu : 'Show in project menu'
   fee_transaction_tax_percentage : 'Tax Amount Percentage Over Credit Card Fee Percentage'
   fee_transaction_tax_amount : 'Fixed Tax Amount Over Credit Card Fee Percentage'
+  field_exchange_rate : 'Exchange Rate'
+  field_transaction_reference : 'Transaction Reference'
+  field_bank_reference : 'Bank Reference'
+  field_converted_amount : 'Converted Amount'
+  field_converted_currency : 'Converted Currency'

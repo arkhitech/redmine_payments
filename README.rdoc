@@ -1,3 +1,5 @@
 = redmine_payments
 
-Redmine 3.2 compatible gem for taking credit card payments via UBL payment gateway
+Allows user to mark payments for invoices and cover transaction fees. Integrates with RedmineCRM invoices plugin and makes available /payments and /invoice_payments reports with filters 
+
+Also provides integration with UBL/Etisalat credit card payment gateway
