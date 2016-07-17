@@ -18,11 +18,11 @@ class PaymentsController < ApplicationController
       @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE)
     end
     @tasks_grid = initialize_grid(@invoices,
-      :name => 'grid',
-      :order_direction => 'desc',
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'PendingInvoices')
+      name: 'grid',
+      order_direction: 'desc',
+      enable_export_to_csv: true,
+      csv_field_separator: ',',
+      csv_file_name: 'PendingInvoices')
     
     export_grid_if_requested('grid' => 'grid') do
      render 'index'
@@ -36,11 +36,11 @@ class PaymentsController < ApplicationController
      Invoice::SENT_INVOICE, @project.self_and_descendants.map(&:id))
    @project_token = @project.token || @project.generate_token
    @tasks_grid = initialize_grid(@invoices,
-   :name => 'grid',
-   :order_direction => 'desc',
-   :enable_export_to_csv => true,
-   :csv_field_separator => ';',
-   :csv_file_name => 'PendingInvoices')
+   name: 'grid',
+   order_direction: 'desc',
+   enable_export_to_csv: true,
+   csv_field_separator: ',',
+   csv_file_name: 'PendingInvoices')
  
     export_grid_if_requested('grid' => 'grid') do
      render 'index'
