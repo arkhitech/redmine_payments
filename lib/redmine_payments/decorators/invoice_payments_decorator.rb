@@ -60,7 +60,7 @@ module RedminePayments
             :name => 'grid',
             :order_direction => 'desc',
             :enable_export_to_csv => true,
-            :csv_field_separator => ';',
+            :csv_field_separator => ',',
             :csv_file_name => 'InvoicePayments')
           
           export_grid_if_requested('grid' => 'grid')
