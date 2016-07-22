@@ -8,7 +8,30 @@ module RedminePayments
           has_one :payment_transaction_fee , dependent: :destroy
           accepts_nested_attributes_for :payment_transaction_fee , reject_if: lambda {|fee| (fee[:fee_amount].blank? || fee[:fee_amount].to_f == 0.0) && fee[:fee_percentage].blank?}
           attr_accessible :payment_transaction_fee_attributes
+
+          validates :exchange_rate, presence: true
+
+          attr_accessor :transaction_reference
+          attr_accessor :bank_reference
+
+          before_create do
+            if self.transaction_reference.present?
+              self.description = "Transaction reference: #{self.transaction_reference} #{self.description}"
+            end
+            if self.bank_reference.present?
+              self.description = "Bank reference: #{self.bank_reference} #{self.description}"      
+            end
+
+            if !self.converted_amount.present?
+              if self.exchange_rate.present?
+                self.converted_amount = self.amount * self.exchange_rate
+              end
+            end
+
+          end
+          
         end
+        
       end
 
       module InstanceMethods
