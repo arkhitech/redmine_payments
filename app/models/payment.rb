@@ -5,6 +5,10 @@ class Payment < ActiveRecord::Base
   attr_accessor :return_path
   attr_accessor :payment_page
   
+  belongs_to :invoice
+  belongs_to :project
+  belongs_to :invoice_payment
+  
   STATE_REDIRECT = 'Redirect'  
   STATE_REGISTRATION = 'Registration'  
   STATE_AUTHORIZATION = 'Authorization'
@@ -15,8 +19,6 @@ class Payment < ActiveRecord::Base
     constructor: Proc.new { |item| item },
     converter: Proc.new { |item| item }
   
-  belongs_to :invoice
-  belongs_to :project
   #before_create :execute
   validate :validate_credit_card
   validates :cc_number, :expiry_date, :cvv2, presence: true, if: "state == Payment::STATE_AUTHORIZATION"
@@ -39,14 +41,20 @@ class Payment < ActiveRecord::Base
     end
   end
   
-   def notify_payment_completed invoice_payment
+  after_save do
+    if self.state == Payment::STATE_FINALIZATION && self.invoice_payment_id
+      self.notify_payment_completed
+    end
+  end
+  
+   def notify_payment_completed 
     group_ids = Setting.plugin_redmine_payments['eligible_for_email_notification']
       @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
           group_ids).group("#{User.table_name}.id")
       @eligible_users.sort_by{|e| e[:firstname]}
       @eligible_users.each do |user|
-       PaymentMailer.notify_payment(user,self,invoice_payment).deliver
+       PaymentMailer.notify_payment(user, self, self.invoice_payment).deliver
      end
   end
   private :notify_payment_completed
@@ -185,16 +193,17 @@ class Payment < ActiveRecord::Base
       invoice_payment = self.invoice.payments.create({amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.
         payment_currency} #{self.payment_amount}, Transaction ID #{self.
-        transaction_id}, Approval Code: #{self.approval_code}"}, 
+        transaction_id}, Approval Code: #{self.approval_code}", 
+        exchange_rate: self.payment_amount.to_f/self.invoice_amount.to_f, 
+        converted_amount: self.payment_amount, converted_currency: self.payment_currency}, 
         without_protection: true)
+      self.invoice_payment = self.invoice_payment
       self.record_transaction_fee(invoice_payment)
       #send email to group
       notify_payment_completed(invoice_payment)      
     end
     
     !errors.any?    
-    
-
   end
 
   def transaction_for_reversal

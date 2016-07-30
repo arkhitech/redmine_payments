@@ -8,11 +8,12 @@
         <th>Description</th>
         <th>Author</th>
         <th>Client</th>
-        <th>Created At</th>
         <th>Updated At</th>
         <th>Date of Payment</th>
         <th>Currency</th>
         <th>Amount</th>
+        <th>Converted Currency</th>
+        <th>Converted Amount</th>
         <th>Fee</th>
         <th>Fee Description</th>
         <th>Net Payment</th>
@@ -25,11 +26,11 @@
           <td><%=@invoice_payment.description%></td>
           <td><%=@invoice_payment.author%></td>
           <td><%=@invoice.contact%></td>
-          <td><%=@invoice_payment.created_at.strftime('%m/%d/%Y')%></td>
-          <td><%=@invoice_payment.updated_at.strftime('%m/%d/%Y')%></td>
           <td><%=@invoice_payment.payment_date.strftime('%m/%d/%Y')%></td>
           <td><%=@invoice_payment.currency%></td>
           <td><%=@invoice_payment.amount%></td>
+          <td><%=@invoice_payment.converted_currency%></td>
+          <td><%=@invoice_payment.converted_amount%></td>
           <td><%='%.2f' % @invoice_payment.transaction_fee if @invoice_payment.transaction_fee%></td>
           <td><%=@invoice_payment.fee_description%></td>
           <td><%='%.2f' % @invoice_payment.net_payment%></td>

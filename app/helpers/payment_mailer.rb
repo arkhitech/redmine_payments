@@ -4,11 +4,12 @@ class PaymentMailer < ActionMailer::Base
   def self.default_url_options
     Mailer.default_url_options
   end  
-  def notify_payment(user,payment,invoice_payment)
-    @invoice=Invoice.find_by_id(payment.invoice_id)
-    @payment=payment
+
+  def notify_payment(user, payment, invoice_payment)
+    @invoice = Invoice.find_by_id(payment.invoice_id)
+    @payment = payment
     @invoice_payment = invoice_payment
-    project=Project.find_by_id(payment.project_id)
+    project = Project.find_by_id(payment.project_id)
     mail(to: user.mail, subject: "Payment has been made for #{project.name} ")
   end
  
