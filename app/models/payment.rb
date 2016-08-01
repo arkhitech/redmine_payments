@@ -40,14 +40,8 @@ class Payment < ActiveRecord::Base
       false
     end
   end
-  
-  after_save do
-    if self.state == Payment::STATE_FINALIZATION && self.invoice_payment_id
-      self.notify_payment_completed
-    end
-  end
-  
-   def notify_payment_completed 
+    
+  def notify_payment_completed 
     group_ids = Setting.plugin_redmine_payments['eligible_for_email_notification']
       @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
@@ -190,17 +184,17 @@ class Payment < ActiveRecord::Base
       errors.add(:base, "#{response_code}: #{response_description}")      
       errors.add(:base, "For more information, please contact your card issuing bank.")
     else
-      invoice_payment = self.invoice.payments.create({amount: self.invoice_amount, payment_date: Date.today,
+      invoice_payment = self.invoice.payments.create!({amount: self.invoice_amount, payment_date: Date.today,
         invoice_id: self.invoice_id, description: "Payment Amount: #{self.
         payment_currency} #{self.payment_amount}, Transaction ID #{self.
         transaction_id}, Approval Code: #{self.approval_code}", 
         exchange_rate: self.payment_amount.to_f/self.invoice_amount.to_f, 
         converted_amount: self.payment_amount, converted_currency: self.payment_currency}, 
         without_protection: true)
-      self.invoice_payment = self.invoice_payment
+      self.invoice_payment = invoice_payment
       self.record_transaction_fee(invoice_payment)
       #send email to group
-      notify_payment_completed(invoice_payment)      
+      notify_payment_completed#(invoice_payment)      
     end
     
     !errors.any?    
