@@ -28,6 +28,9 @@ module RedminePayments
               end
             end
 
+            if !self.converted_currency.present?
+              self.converted_currency = self.currency
+            end
           end
           
         end
