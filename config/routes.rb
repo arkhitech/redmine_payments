@@ -1,6 +1,6 @@
 resources :projects do
   
-  resources :invoice_payments, only: [:show, :index] do
+  resources :invoice_payments, only: [:index] do
     collection do
       put '/edit/:id', to: 'invoice_payments#edit'
     end
@@ -42,7 +42,7 @@ end
   end
 end
 
-resources :invoice_payments, only: [:show, :index] do
+resources :invoice_payments, only: [:index] do
   collection do
     put '/edit/:id', to: 'invoice_payments#edit'
   end
