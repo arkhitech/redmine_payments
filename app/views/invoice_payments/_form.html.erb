@@ -26,7 +26,7 @@
 <p><%= f.text_field :converted_amount, id: 'transaction_converted_amount',:label => l(:field_converted_amount), :size => 10,:value => @invoice_payment.amount %></p>
 
 
-<p><%= f.select :converted_currency, collection_for_currencies_select, :label => l(:field_converted_currency), :include_blank => true  %></p>
+<p><%= f.select :converted_currency, collection_for_currencies_select(ContactsSetting.default_currency, ContactsSetting.major_currencies), :label => l(:field_converted_currency), :include_blank => true  %></p>
  
 
 <% @invoice_payment.custom_field_values.each do |value| %>
