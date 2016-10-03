@@ -152,7 +152,7 @@
    var inputtxt = $("#transaction_exchange_rate"); 
    if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
      var convertedCurrencyView = $("#transaction_converted_amount");
-     var invoiceAmount = $("#invoice_payment_amount"); 
+     var invoiceAmount = $("#payment_net_Amount"); 
      
      var convertedCurrencyValue = (inputtxt.val()*invoiceAmount.val());
      convertedCurrencyView.val(convertedCurrencyValue.toFixed(2));
@@ -168,7 +168,7 @@
   var inputtxt = $("#transaction_converted_amount"); 
    if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
      var exchangeRateView = $("#transaction_exchange_rate");
-     var invoiceAmount = $("#invoice_payment_amount"); 
+     var invoiceAmount = $("#payment_net_Amount"); 
      
      var exchangeRateValue=(inputtxt.val()/invoiceAmount.val());
      exchangeRateView.val(exchangeRateValue.toFixed(2));
