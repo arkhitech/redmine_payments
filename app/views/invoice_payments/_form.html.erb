@@ -20,7 +20,7 @@
 </p>
 <p><%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
 <p><label for="payment_net_Amount">Net Payment</label>
-  <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" val="<%=@invoice_payment.amount%>" ></input></p>
+  <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" value="<%=@invoice_payment.amount%>" ></input></p>
 <% end %>
 
 <p><%= f.text_field :converted_amount, id: 'transaction_converted_amount',:label => l(:field_converted_amount), :size => 10,:value => @invoice_payment.amount %></p>
