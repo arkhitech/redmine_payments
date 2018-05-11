@@ -142,7 +142,7 @@
      var exchangeRateView = $("#transaction_exchange_rate");
      
      var convertedCurrencyValue = (exchangeRateView.val()*invoiceAmount.val());
-     convertedCurrencyView.val(convertedCurrencyValue.toFixed(2)); 
+     convertedCurrencyView.val(convertedCurrencyValue.toFixed(4)); 
       
     } else {
       inputtxt.val('');
@@ -152,12 +152,12 @@
    var inputtxt = $("#transaction_exchange_rate"); 
    if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
      var convertedCurrencyView = $("#transaction_converted_amount");
-     var invoiceAmount = $("#payment_net_Amount"); 
+     var invoiceAmount = $("#invoice_payment_amount"); 
      
      var convertedCurrencyValue = (inputtxt.val()*invoiceAmount.val());
      convertedCurrencyView.val(convertedCurrencyValue.toFixed(2));
      
-   inputtxt.val((inputtxt.val()*1.0).toFixed(2));
+   inputtxt.val((inputtxt.val()*1.0).toFixed(4));
      
    }else {
       inputtxt.val('');
@@ -168,10 +168,10 @@
   var inputtxt = $("#transaction_converted_amount"); 
    if( inputtxt.val().match(/^-?\d*(\.\d+)?$/)) {
      var exchangeRateView = $("#transaction_exchange_rate");
-     var invoiceAmount = $("#payment_net_Amount"); 
+     var invoiceAmount = $("#invoice_payment_amount");
      
      var exchangeRateValue=(inputtxt.val()/invoiceAmount.val());
-     exchangeRateView.val(exchangeRateValue.toFixed(2));
+     exchangeRateView.val(exchangeRateValue.toFixed(4));
      
      inputtxt.val((inputtxt.val()*1.0).toFixed(2));
      

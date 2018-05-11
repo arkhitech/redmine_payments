@@ -12,14 +12,13 @@ class PaymentsController < ApplicationController
     return deny_access unless User.current.admin? || User.current.allowed_to?(:make_payment, @project)
     if @project
       @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE,
-        project_id: @project.self_and_descendants.map(&:id))
+        project_id: @project.self_and_descendants.map(&:id)).order(id: :desc)
       @project_token = @project.token || @project.generate_token
     else
-      @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE)
+      @invoices = Invoice.where(status_id: Invoice::SENT_INVOICE).order(id: :desc)
     end
     @tasks_grid = initialize_grid(@invoices,
       name: 'grid',
-      order_direction: 'desc',
       enable_export_to_csv: true,
       csv_field_separator: ',',
       csv_file_name: 'PendingInvoices')

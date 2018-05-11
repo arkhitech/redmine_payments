@@ -22,10 +22,10 @@
    invoice_payment.author
   end
 
-  g.column name: 'Client', attribute: 'contact_id', in_html: false, model: 'Invoice', custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
+  g.column name: 'Client', attribute: 'contact_id', in_html: false, assoc: :invoice, custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
     invoice_payment.invoice.contact    
   end
-  g.column name: 'Client', attribute: 'contact_id', in_csv: false, model: 'Invoice', custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
+  g.column name: 'Client', attribute: 'contact_id', in_csv: false, assoc: :invoice, custom_filter: [:invoice, :to_option] , detach_with_id: :client_filter do |invoice_payment|
     link_to invoice_payment.invoice.contact, invoice_payment.invoice.contact
   end
 

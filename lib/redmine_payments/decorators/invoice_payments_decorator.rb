@@ -39,9 +39,9 @@ module RedminePayments
             end
             
             @invoice_payments = InvoicePayment. 
-              joins("INNER JOIN #{Invoice.table_name} on #{Invoice.table_name}.id= #{InvoicePayment.table_name}.invoice_id")
-            .joins("INNER JOIN #{Project.table_name} on #{Project.table_name}.id= #{Invoice.table_name}.project_id")
-            .where("#{Project.table_name}.identifier=?",params[:project_id])
+              joins("INNER JOIN #{Invoice.table_name} inv on inv.id= #{InvoicePayment.table_name}.invoice_id").
+              joins("INNER JOIN #{Project.table_name} on #{Project.table_name}.id= inv.project_id").
+              where("#{Project.table_name}.identifier=?",params[:project_id])
           else
             #show invoices for all projects that user is authorized to see
             allowed_project_ids = allowed_to_projects(:list_and_edit_invoice_payments).map(&:id)
