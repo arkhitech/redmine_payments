@@ -1,11 +1,11 @@
 class PaymentsController < ApplicationController
   unloadable
   menu_item :redmine_payments
-  before_filter :find_optional_project, :only => [:show, :index]
-  #skip_before_filter :authenticate_user, only: [:shared_invoice,:shared_project]
-  skip_before_filter :check_if_login_required, only: [:shared_invoice,:shared_project,:generate,:register, :finalize]
-  skip_before_filter :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
-  before_filter :find_project, except: [:index, :shared_invoice, :shared_project, :generate_invoice_payment_token]
+  before_action :find_optional_project, :only => [:show, :index]
+  #skip_before_action :authenticate_user, only: [:shared_invoice,:shared_project]
+  skip_before_action :check_if_login_required, only: [:shared_invoice,:shared_project,:generate,:register, :finalize]
+  skip_before_action :verify_authenticity_token, only: [:finalize,:shared_invoice,:shared_project]
+  before_action :find_project, except: [:index, :shared_invoice, :shared_project, :generate_invoice_payment_token]
   
   
   def index
@@ -22,7 +22,7 @@ class PaymentsController < ApplicationController
       enable_export_to_csv: true,
       csv_field_separator: ',',
       csv_file_name: 'PendingInvoices')
-    
+
     export_grid_if_requested('grid' => 'grid') do
      render 'index'
     end

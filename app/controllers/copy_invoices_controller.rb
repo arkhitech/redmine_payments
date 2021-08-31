@@ -2,7 +2,7 @@ class CopyInvoicesController < ApplicationController
   unloadable
   helper InvoicesHelper
   helper PaymentsHelper
-  before_filter :find_optional_project, :only => [:show, :index]
+  before_action :find_optional_project, :only => [:show, :index]
 
   def index  
     if params[:project_id]

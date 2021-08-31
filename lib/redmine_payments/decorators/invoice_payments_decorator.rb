@@ -10,14 +10,15 @@ module RedminePayments
           menu_item :invoice_payments
           
           include PaymentsHelper
-          skip_before_filter :authorize, :only => [:show, :index, :new, :create]
-          before_filter :authorize_index_show, :only => [:index, :show, :new, :create]
-          before_filter :find_invoice_payment_invoice, :only => [:create , :new]
-          #          before_filter :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
+          skip_before_action :authorize, :only => [:show, :index, :new, :create]
+          before_action :authorize_index_show, :only => [:index, :show, :new, :create]
+          before_action :find_invoice_payment_invoice, :only => [:create , :new]
+          #          before_action :find_invoice_payment_invoice, :only => [:create, :new, :index, :show]
           #    accept_api_auth :index, :show, :create, :update, :destroy ,:view ,:edit
-          # before_filter :find_invoice_payment, :except => [ :edit, :index, :show, :create]
-          
-          alias_method_chain :create, :fee
+          # before_action :find_invoice_payment, :except => [ :edit, :index, :show, :create]
+
+          alias_method :create_without_fee, :create
+          alias_method :create, :create_with_fee
         end
       end
       

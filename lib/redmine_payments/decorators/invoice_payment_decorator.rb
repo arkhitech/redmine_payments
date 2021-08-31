@@ -4,17 +4,15 @@ module RedminePayments
       def self.included(base)
         base.send(:include, InstanceMethods)
         
-        base.class_eval do
-          has_one :payment_transaction_fee , dependent: :destroy
-          accepts_nested_attributes_for :payment_transaction_fee , reject_if: lambda {|fee| (fee[:fee_amount].blank? || fee[:fee_amount].to_f == 0.0) && fee[:fee_percentage].blank?}
-          attr_accessible :payment_transaction_fee_attributes
+          base.has_one :payment_transaction_fee , dependent: :destroy
+          base.accepts_nested_attributes_for :payment_transaction_fee , reject_if: lambda {|fee| (fee[:fee_amount].blank? || fee[:fee_amount].to_f == 0.0) && fee[:fee_percentage].blank?}
 
-          validates :exchange_rate, presence: true
+          base.validates :exchange_rate, presence: true
 
-          attr_accessor :transaction_reference
-          attr_accessor :bank_reference
+          base.attr_accessor :transaction_reference
+          base.attr_accessor :bank_reference
 
-          before_create do
+          base.before_create do
             if self.transaction_reference.present?
               self.description = "Transaction reference: #{self.transaction_reference} #{self.description}"
             end
@@ -31,9 +29,7 @@ module RedminePayments
             if !self.converted_currency.present?
               self.converted_currency = self.currency
             end
-          end
-          
-        end
+          end          
         
       end
 

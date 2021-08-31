@@ -8,8 +8,8 @@ module RedminePayments
           unloadable
           menu_item :invoices
           
-          before_filter :find_invoice_project, :only => [:create, :new, :copy]
-          before_filter :authorize, :except => [:index, :edit, :update, :destroy, :auto_complete, :client_view]
+          before_action :find_invoice_project, :only => [:create, :new, :copy]
+          before_action :authorize, :except => [:index, :edit, :update, :destroy, :auto_complete, :client_view]
         end
       end
 
