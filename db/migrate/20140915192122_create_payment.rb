@@ -1,4 +1,4 @@
-class CreatePayment < ActiveRecord::Migration
+class CreatePayment < ActiveRecord::Migration[4.2]  
   def self.up
     create_table :payments do |t|
       t.string :customer_name

@@ -1,4 +1,4 @@
-class AddFinalizationFieldsToPayment < ActiveRecord::Migration
+class AddFinalizationFieldsToPayment < ActiveRecord::Migration[4.2]  
   def change
     add_column :payments, :payment_order_id, :string
     add_column :payments, :payment_balance, :string
