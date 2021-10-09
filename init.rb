@@ -1,6 +1,7 @@
 require 'redmine'
+require 'wice_grid_config'
 Rails.configuration.to_prepare do
-   require_dependency 'project'
+  require_dependency 'project'
   Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
   
   require_dependency 'invoice'
@@ -31,7 +32,7 @@ Redmine::Plugin.register :redmine_payments do
   author 'Arkhitech'
   description 'This is a plugin for Redmine which incorporates payment of invoices through credit cards'
   version '0.0.1'
-  url 'http://example.com/path/to/plugin'
+  url 'https://github.com/arkhitech/redmine_payments'
   author_url 'https://github.com/arkhitech'
   
   menu :project_menu, :redmine_payments, { controller: 'payments', action: 'index' },
