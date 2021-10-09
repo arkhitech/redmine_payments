@@ -151,9 +151,6 @@ class PaymentsController < ApplicationController
   end
   private
   
-  def find_project
-    @project = Project.find(params[:project_id])
-  end
   def find_invoice
     @invoice = Invoice.find(params[:project_id])
   end
