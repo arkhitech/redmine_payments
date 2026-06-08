@@ -6,7 +6,6 @@ module RedminePayments
         base.send(:include, InstanceMethods)
         
         base.class_eval do
-          unloadable
           menu_item :invoice_payments
           
           include PaymentsHelper
@@ -90,11 +89,11 @@ module RedminePayments
             
             respond_to do |format|
               format.html { redirect_to invoice_path(@invoice) }
-              format.api  { render :action => 'show', :status => :created, :location => invoice_payment_url(@invoice_payment) }
+              format.api  { render action: 'show', :status => :created, :location => invoice_payment_url(@invoice_payment) }
             end
           else
             respond_to do |format|
-              format.html { render :action => 'new' }
+              format.html { render action: 'new' }
               format.api  { render_validation_errors(@invoice_payment) }
             end
           end

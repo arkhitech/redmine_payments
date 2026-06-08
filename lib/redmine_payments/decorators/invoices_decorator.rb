@@ -5,7 +5,6 @@ module RedminePayments
         base.send(:include, InstanceMethods)
         
         base.class_eval do
-          unloadable
           menu_item :invoices
           
           before_action :find_invoice_project, :only => [:create, :new, :copy]

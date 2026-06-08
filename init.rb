@@ -1,30 +1,28 @@
+# The plugin's lib/ files don't follow Zeitwerk naming conventions.
+# They are explicitly required below. Ignore them from autoloading.
+Rails.autoloaders.main.ignore(File.join(__dir__, 'lib'))
+
 require 'redmine'
-require 'wice_grid_config'
-Rails.configuration.to_prepare do
-  require_dependency 'project'
-  Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
-  
-  require_dependency 'invoice'
-  Invoice.send(:include, RedminePayments::Decorators::InvoiceDecorator)
-  
-  require_dependency 'invoice_payments_controller'
-  InvoicePaymentsController.send(:include, RedminePayments::Decorators::InvoicePaymentsDecorator)
+require_relative 'lib/wice_grid_config'
 
-  require_dependency 'invoices_controller'
-  InvoicesController.send(:include, RedminePayments::Decorators::InvoicesDecorator)
+require_relative 'lib/redmine_payments/decorators/project_decorator'
+require_relative 'lib/redmine_payments/decorators/invoice_decorator'
+require_relative 'lib/redmine_payments/decorators/invoice_payments_decorator'
+require_relative 'lib/redmine_payments/decorators/invoices_decorator'
+require_relative 'lib/redmine_payments/decorators/user_decorator'
+require_relative 'lib/redmine_payments/decorators/invoice_payment_decorator'
+require_relative 'lib/redmine_payments/decorators/contact_decorator'
 
-  require_dependency 'user'
-  User.send(:include, RedminePayments::Decorators::UserDecorator)
-  
-  require_dependency 'invoice_payment'
-  InvoicePayment.send(:include, RedminePayments::Decorators::InvoicePaymentDecorator)
-  
-  require_dependency 'contact'
-  Contact.send(:include, RedminePayments::Decorators::ContactDecorator)
-  
-  Moneyjs.configure do |config|
-    config.only_currencies = ['PKR','USD']
-  end    
+Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
+Invoice.send(:include, RedminePayments::Decorators::InvoiceDecorator)
+InvoicePaymentsController.send(:include, RedminePayments::Decorators::InvoicePaymentsDecorator)
+InvoicesController.send(:include, RedminePayments::Decorators::InvoicesDecorator)
+User.send(:include, RedminePayments::Decorators::UserDecorator)
+InvoicePayment.send(:include, RedminePayments::Decorators::InvoicePaymentDecorator)
+Contact.send(:include, RedminePayments::Decorators::ContactDecorator)
+
+Moneyjs.configure do |config|
+  config.only_currencies = ['PKR','USD']
 end
 
 Redmine::Plugin.register :redmine_payments do
@@ -38,11 +36,11 @@ Redmine::Plugin.register :redmine_payments do
   menu :project_menu, :redmine_payments, { controller: 'payments', action: 'index' },
     caption: :caption_redmine_payments, param: :project_id
   
-  menu :top_menu, :invoice_payments, {:controller => 'invoice_payments', :action => 'index', :project_id => nil}, :caption => "Invoice Payments", :if => Proc.new {
-    User.current.allowed_to?({:controller => 'invoice_payments', :action => 'index'}, nil, {:global => true}) && Setting.plugin_redmine_payments[:payment_invoices_show_payment_invoices_in_top_menu ]
+  menu :top_menu, :invoice_payments, {controller: 'invoice_payments', action: 'index', :project_id => nil}, :caption => "Invoice Payments", :if => Proc.new {
+    User.current.allowed_to?({controller: 'invoice_payments', action: 'index'}, nil, {:global => true}) && Setting.plugin_redmine_payments[:payment_invoices_show_payment_invoices_in_top_menu ]
   }
   menu :application_menu, :invoice_payments,
-                          {:controller => 'invoice_payments', :action => 'index'},
+                          {controller: 'invoice_payments', action: 'index'},
                           :caption => "Invoice Payments",
                           :param => :project_id,
                           :if => Proc.new{
@@ -51,10 +49,10 @@ Redmine::Plugin.register :redmine_payments do
 
   
   menu :project_menu, :copy_invoices, 
-                          {:controller => 'copy_invoices', :action => 'index'},
+                          {controller: 'copy_invoices', action: 'index'},
                           :caption => "Copy Invoice", :param => :project_id
   menu :project_menu, :invoice_payments, 
-                          {:controller => 'invoice_payments', :action => 'index'},
+                          {controller: 'invoice_payments', action: 'index'},
                           :caption => "Invoice Payments", :param => :project_id
 
   

@@ -2,31 +2,31 @@
 <%= error_messages_for 'invoice_payment' %>
 
 <div class="box tabular">
-<p><%= f.text_field :amount, :label => l(:field_invoice_amount), :size => 10, :required => true %></p>
-<p><%= f.text_field :payment_date, :label => l(:label_invoice_payment_date), :size => 12, :required => true %><%= calendar_for('invoice_payment_payment_date') %> </p>
-<p><%= f.text_field :exchange_rate, id: 'transaction_exchange_rate',:label => l(:field_exchange_rate), :size => 10, :required => true, :value => 1.00  %></p>
+<p><%= f.text_field :amount, label: l(:field_invoice_amount), :size => 10, :required => true %></p>
+<p><%= f.text_field :payment_date, label: l(:label_invoice_payment_date), :size => 12, :required => true %><%= calendar_for('invoice_payment_payment_date') %> </p>
+<p><%= f.text_field :exchange_rate, id: 'transaction_exchange_rate',label: l(:field_exchange_rate), :size => 10, :required => true, :value => 1.00  %></p>
 <p><%= f.text_field :description, :style => "width: 98%;" %></p>
 <p><%= f.text_field :transaction_reference  %></p>
 <p><%= f.text_field :bank_reference  %></p>
 <%@invoice_payment.build_payment_transaction_fee%>
 <%=f.fields_for :payment_transaction_fee do |fee| %>
 <p>
-  <%= fee.text_field :fee_amount, id: 'transaction_fee_amount', :label => l(:fee_amount), :size => 10, :required => true %>
+  <%= fee.text_field :fee_amount, id: 'transaction_fee_amount', label: l(:fee_amount), :size => 10, :required => true %>
   <span id="fee_amount_percentage"></span>
 </p>
 <p>
-  <%= fee.text_field :fee_percentage, id: 'transaction_fee_percentage', :label => l(:fee_percentage), :size => 10  %>
+  <%= fee.text_field :fee_percentage, id: 'transaction_fee_percentage', label: l(:fee_percentage), :size => 10  %>
   <span id="fee_percentage_amount"></span>
 </p>
-<p><%= fee.text_field :description,:label => l(:fee_description),:required => true, :style => "width: 50%;" %></p>
+<p><%= fee.text_field :description,label: l(:fee_description),:required => true, :style => "width: 50%;" %></p>
 <p><label for="payment_net_Amount">Net Payment</label>
   <input id="payment_net_Amount" type="text" size="10" required="required" name="Net_Amount" label="Net Amount" value="<%=@invoice_payment.amount%>" ></input></p>
 <% end %>
 
-<p><%= f.text_field :converted_amount, id: 'transaction_converted_amount',:label => l(:field_converted_amount), :size => 10,:value => @invoice_payment.amount %></p>
+<p><%= f.text_field :converted_amount, id: 'transaction_converted_amount',label: l(:field_converted_amount), :size => 10,:value => @invoice_payment.amount %></p>
 
 
-<p><%= f.select :converted_currency, collection_for_currencies_select(@invoice_payment.currency, ContactsSetting.major_currencies), :label => l(:field_converted_currency), :include_blank => true  %></p>
+<p><%= f.select :converted_currency, collection_for_currencies_select(@invoice_payment.currency, ContactsSetting.major_currencies), label: l(:field_converted_currency), :include_blank => true  %></p>
  
 
 <% @invoice_payment.custom_field_values.each do |value| %>

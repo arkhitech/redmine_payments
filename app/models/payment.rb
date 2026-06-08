@@ -1,4 +1,4 @@
-class Payment < ActiveRecord::Base
+class Payment < ApplicationRecord
   
   attr_accessor :cc_number, :cvv2
   attr_accessor :state

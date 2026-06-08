@@ -3,7 +3,7 @@
 <div class="row">
   <div>
     <div>
-      <%= labelled_form_for :invoice_payment, @invoice_payment, :url => {:action => 'edit', :project_id => @project}, :html => { :multipart => true, :id => 'invoice_payment_form'} do |f|  %> 
+      <%= labelled_form_for :invoice_payment, @invoice_payment, url: {action: 'edit', project_id: @project}, :html => { :multipart => true, id: 'invoice_payment_form'} do |f|  %> 
       <div>   
         <p><%= f.text_field :description, :style => "width: 98%;" %></p>
         <p><%= submit_tag l(:button_save) -%></p>

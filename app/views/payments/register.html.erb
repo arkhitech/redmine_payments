@@ -1,5 +1,5 @@
 <% content_for :header_tags do %>
-    <%= stylesheet_link_tag 'jquery.fancybox.css', :plugin => 'redmine_payments' %>
+    <%= stylesheet_link_tag 'jquery.fancybox.css', plugin: 'redmine_payments' %>
 <% end %>
 
 <%=render partial: 'partial_payment_form', locals: {payment: @payment}%>

@@ -1,5 +1,4 @@
 class TransactionsController < ApplicationController
-  unloadable
   
   def index
     require 'rjb'

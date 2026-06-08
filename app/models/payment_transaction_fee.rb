@@ -1,5 +1,4 @@
-class PaymentTransactionFee < ActiveRecord::Base
-  unloadable
+class PaymentTransactionFee < ApplicationRecord
   # attr_accessible :fee_amount, :fee_percentage, :description 
   belongs_to :invoice_payment
 

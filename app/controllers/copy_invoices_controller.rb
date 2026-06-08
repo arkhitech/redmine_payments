@@ -1,5 +1,4 @@
 class CopyInvoicesController < ApplicationController
-  unloadable
   helper InvoicesHelper
   helper PaymentsHelper
   before_action :find_optional_project, :only => [:show, :index]
